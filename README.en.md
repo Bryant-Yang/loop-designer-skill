@@ -129,11 +129,21 @@ Typical output:
 
 ## Source
 
-This skill was inspired by the WeChat translation of "Getting started with loops":
+This skill was mainly inspired by Claude's official article:
+
+```text
+Getting started with loops
+Authors: Delba de Oliveira, Michael Segner
+Published: 2026-06-30
+Accessed: 2026-07-07
+https://claude.com/blog/getting-started-with-loops
+```
+
+Chinese reading reference:
 
 ```text
 从零开始玩转循环 (Getting started with loops)【译】
+宝玉AI
 Published: 2026-07-07
-Accessed: 2026-07-07
 https://mp.weixin.qq.com/s/lG4WU5sSykOVu4XMHtWq1g
 ```

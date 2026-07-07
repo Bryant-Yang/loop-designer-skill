@@ -129,11 +129,21 @@ cp skill/loop-designer/SKILL.md ~/.agents/skills/loop-designer/SKILL.md
 
 ## 来源
 
-这个 skill 的设计参考了宝玉AI翻译的文章：
+这个 skill 的设计主要参考 Claude 官方文章：
+
+```text
+Getting started with loops
+作者：Delba de Oliveira, Michael Segner
+发布：2026-06-30
+访问：2026-07-07
+https://claude.com/blog/getting-started-with-loops
+```
+
+中文阅读参考：
 
 ```text
 从零开始玩转循环 (Getting started with loops)【译】
+宝玉AI
 发布：2026-07-07
-访问：2026-07-07
 https://mp.weixin.qq.com/s/lG4WU5sSykOVu4XMHtWq1g
 ```

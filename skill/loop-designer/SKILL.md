@@ -7,7 +7,7 @@ description: Design bounded AI agent loops. Use when the user asks to 做 loop, 
 
 Help the user turn repeated AI work into a bounded loop with a clear trigger, stop condition, verification signal, and cost boundary.
 
-This skill is based on the loop model from "Getting started with loops": an AI agent repeatedly runs a work cycle until a predefined stop condition is met. Source read for this skill: WeChat translation "从零开始玩转循环 (Getting started with loops)【译】", 宝玉AI, published 2026-07-07, accessed 2026-07-07, https://mp.weixin.qq.com/s/lG4WU5sSykOVu4XMHtWq1g. Treat platform-specific command names from that article as concepts unless the current environment exposes those commands.
+This skill is based on the loop model from Claude's official article "Getting started with loops": an AI agent repeatedly runs a work cycle until a predefined stop condition is met. Primary source read for this skill: "Getting started with loops", Delba de Oliveira and Michael Segner, Claude by Anthropic, published 2026-06-30, accessed 2026-07-07, https://claude.com/blog/getting-started-with-loops. Chinese reference also read: WeChat translation "从零开始玩转循环 (Getting started with loops)【译】", 宝玉AI, published 2026-07-07, https://mp.weixin.qq.com/s/lG4WU5sSykOVu4XMHtWq1g. Treat platform-specific command names from the article as concepts unless the current environment exposes those commands.
 
 ## Core Rule
 
