@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "mode": "uncommitted",
+    "profile": "normal",
+    "requested_scope": "auto",
+    "diff_file": "/Users/bobo/work/ai/.agent-review-input/loop-designer-review-context-v2.md",
+    "resolved_scope": "external",
+    "collection_truncated": false,
+    "review_type": "documentation",
+    "arbiter": "none",
+    "diff_truncated": false,
+    "created_at": "2026-07-07T17:30:40.868592+08:00"
+  },
+  "results": {
+    "codex_initial": {
+      "ok": true,
+      "status": "PASS",
+      "error": "",
+      "review": "codex-initial.md",
+      "raw": "codex-initial.raw.jsonl"
+    },
+    "claude_initial": {
+      "ok": true,
+      "status": "PASS",
+      "error": "",
+      "review": "claude-initial.md",
+      "raw": "claude-initial.raw.json"
+    },
+    "codex_response": {
+      "ok": true,
+      "status": "NEEDS_REVISION",
+      "error": "",
+      "review": "codex-response.md",
+      "raw": "codex-response.raw.jsonl"
+    },
+    "claude_response": {
+      "ok": true,
+      "status": "PASS",
+      "error": "",
+      "review": "claude-response.md",
+      "raw": "claude-response.raw.json"
+    }
+  }
+}

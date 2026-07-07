@@ -1,0 +1,2872 @@
+{
+  "meta": {
+    "profile": "normal",
+    "mode": "uncommitted",
+    "scope": "external",
+    "review_type": "documentation",
+    "arbiter": "none",
+    "diff_truncated": false
+  },
+  "raw": [
+    {
+      "id": "raw-0934487a52b6",
+      "title": "No P0/P1/P2 findings.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "No P0/P1/P2 findings.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "No P0/P1/P2 findings."
+    },
+    {
+      "id": "raw-5fe423642dba",
+      "title": "Undefined borrowed concept \"blocked policy\" embedded in a stop condition",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"2. Goal-Based Loop\"",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "Stop:` line)",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`Stop: the goal is met, the turn/attempt limit is reached, or the platform-specific blocked policy says to stop.` The opening caveat only neutralizes *command names* from the source article (\"Treat platform-specific command names from that article as concepts\"), not borrowed *policies*.",
+      "impact": "An agent filling/executing a goal loop that has never read the source article will either ignore this third stop condition or hallucinate a meaning. Stop conditions are safety-critical; undefined terms there are exactly the \"ambiguous steps\" the lens flags.",
+      "suggested_action": "Replace with plain language, e.g. \"or a hard platform block (rate limit, safety block, quota) prevents progress,\" or drop it since the other two conditions already cover the realistic cases.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` (section \"2. Goal-Based Loop\", `Stop:` line)\n- Evidence: `Stop: the goal is met, the turn/attempt limit is reached, or the platform-specific blocked policy says to stop.` The opening caveat only neutralizes *command names* from the source article (\"Treat platform-specific command names from that article as concepts\"), not borrowed *policies*.\n- Impact: An agent filling/executing a goal loop that has never read the source article will either ignore this third stop condition or hallucinate a meaning. Stop conditions are safety-critical; undefined terms there are exactly the \"ambiguous steps\" the lens flags.\n- Suggested fix: Replace with plain language, e.g. \"or a hard platform block (rate limit, safety block, quota) prevents progress,\" or drop it since the other two conditions already cover the realistic cases."
+    },
+    {
+      "id": "raw-7010b61c42c5",
+      "title": "Source attribution is present but fragile and unverifiable",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (intro",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "after \"Getting started with loops\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The entire conceptual model is sourced to a single walled-garden link: `Source read for this skill: WeChat translation \"...\", 宝玉AI, 2026-07-07, https://mp.weixin.qq.com/s/...`. No canonical English original is cited; the URL is the kind that rots, geo-restricts, or edits silently, and I could not fetch it here.",
+      "impact": "A future reader/agent cannot verify that the turn/goal/time/proactive taxonomy and the role-separation diagram actually came from \"Getting started with loops.\" If the link decays, the skill's foundational claim becomes uncheckable. (The doc is hedged, so this is verifiability, not an over-claim.)",
+      "suggested_action": "If a canonical English source exists, cite it alongside the WeChat translation; label the date as \"accessed 2026-07-07\" to disambiguate from publish date; and inline-summarize the model so the skill does not depend on the link resolving.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` (intro, after \"Getting started with loops\")\n- Evidence: The entire conceptual model is sourced to a single walled-garden link: `Source read for this skill: WeChat translation \"...\", 宝玉AI, 2026-07-07, https://mp.weixin.qq.com/s/...`. No canonical English original is cited; the URL is the kind that rots, geo-restricts, or edits silently, and I could not fetch it here.\n- Impact: A future reader/agent cannot verify that the turn/goal/time/proactive taxonomy and the role-separation diagram actually came from \"Getting started with loops.\" If the link decays, the skill's foundational claim becomes uncheckable. (The doc is hedged, so this is verifiability, not an over-claim.)\n- Suggested fix: If a canonical English source exists, cite it alongside the WeChat translation; label the date as \"accessed 2026-07-07\" to disambiguate from publish date; and inline-summarize the model so the skill does not depend on the link resolving."
+    },
+    {
+      "id": "raw-244ba08b03ab",
+      "title": "No runnable in-session example despite in-session execution being the primary capability",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"Examples\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The Capability boundary and \"User-Facing Output\" say turn-based and bounded goal-style loops *can run in the current session*, yet all three examples are non-runnable from this skill's perspective: Example 1 is time-based (gated on a runner), Example 2 is a pushback on a vague goal, Example 3 is time-based. The \"Good goal examples\" block gives goal *statements* but no worked design→execute trace.",
+      "impact": "A reader/agent has no model of the full output it is actually permitted to produce end-to-end (Loop Contract + Execution Plan + Checkpoint + Stop Rule) for the loop types it runs. This is a completeness gap for the intended reader.",
+      "suggested_action": "Add one bounded goal-loop example that can execute in-session (e.g., \"make the failing suite pass, ≤4 attempts, report smallest remaining failure\") showing contract, plan, a checkpoint, and the stop-with-evidence rule.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` (section \"Examples\")\n- Evidence: The Capability boundary and \"User-Facing Output\" say turn-based and bounded goal-style loops *can run in the current session*, yet all three examples are non-runnable from this skill's perspective: Example 1 is time-based (gated on a runner), Example 2 is a pushback on a vague goal, Example 3 is time-based. The \"Good goal examples\" block gives goal *statements* but no worked design→execute trace.\n- Impact: A reader/agent has no model of the full output it is actually permitted to produce end-to-end (Loop Contract + Execution Plan + Checkpoint + Stop Rule) for the loop types it runs. This is a completeness gap for the intended reader.\n- Suggested fix: Add one bounded goal-loop example that can execute in-session (e.g., \"make the failing suite pass, ≤4 attempts, report smallest remaining failure\") showing contract, plan, a checkpoint, and the stop-with-evidence rule."
+    },
+    {
+      "id": "raw-14eee3d98769",
+      "title": "Four contract fields are illustrated but not defined inline",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"Loop Contract\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`Progress signal means what must change between attempts...` is the only field given an inline definition. `Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are shown only by example and overlap conceptually (e.g., in Example 1, \"GitHub review thread count plus CI status\" vs \"GitHub PR checks and review threads\" vs \"Deterministic GitHub API queries\").",
+      "impact": "An agent filling the contract can conflate *what is observed* (signal), *where state lives* (source of truth), *how it is checked* (evaluator), and *who decides* (authority), producing redundant or contradictory entries.",
+      "suggested_action": "One-line gloss for each, or a single sentence: source of truth = where; verification signal = what you observe; evaluator = how you check; pass/fail authority = who decides.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` (section \"Loop Contract\")\n- Evidence: `Progress signal means what must change between attempts...` is the only field given an inline definition. `Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are shown only by example and overlap conceptually (e.g., in Example 1, \"GitHub review thread count plus CI status\" vs \"GitHub PR checks and review threads\" vs \"Deterministic GitHub API queries\").\n- Impact: An agent filling the contract can conflate *what is observed* (signal), *where state lives* (source of truth), *how it is checked* (evaluator), and *who decides* (authority), producing redundant or contradictory entries.\n- Suggested fix: One-line gloss for each, or a single sentence: source of truth = where; verification signal = what you observe; evaluator = how you check; pass/fail authority = who decides."
+    },
+    {
+      "id": "raw-6ddf0e9b1c70",
+      "title": "Capability Gate lists what to verify but not how",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"Operational Capability Gate\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`Before executing a time-based or proactive loop, verify: Runner: ... Persistence: ... Logs: ... Cancel path: ... Credentials: ... Write permissions: ... Recovery: ...` — each item names the thing to confirm, none names the verification action.",
+      "impact": "An agent can satisfy \"Runner\" by naming a cron entry without proving it actually wakes the loop, or \"Cancel path\" by asserting one exists. The gate's purpose (only run after verification) is undermined if \"verify\" is read as \"list.\"",
+      "suggested_action": "Add a concrete check for the load-bearing items, e.g., \"verify Runner and Cancel path by triggering one controlled test run and confirming it both fires and can be halted.\"",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` (section \"Operational Capability Gate\")\n- Evidence: `Before executing a time-based or proactive loop, verify: Runner: ... Persistence: ... Logs: ... Cancel path: ... Credentials: ... Write permissions: ... Recovery: ...` — each item names the thing to confirm, none names the verification action.\n- Impact: An agent can satisfy \"Runner\" by naming a cron entry without proving it actually wakes the loop, or \"Cancel path\" by asserting one exists. The gate's purpose (only run after verification) is undermined if \"verify\" is read as \"list.\"\n- Suggested fix: Add a concrete check for the load-bearing items, e.g., \"verify Runner and Cancel path by triggering one controlled test run and confirming it both fires and can be halted.\""
+    },
+    {
+      "id": "raw-f022fdc1a501",
+      "title": "Intra-doc trigger overlap between Time-Based and Proactive",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (sections \"3. Time-Based Loop\"",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "\"4. Proactive Loop\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Time-Based `Trigger: interval or schedule.` Proactive `Trigger: event, queue, webhook, routine, or scheduled scan.` \"scheduled scan\" / \"routine\" appear in Proactive while \"schedule\" is the defining Time-Based trigger; \"periodic inbox triage\" (time-based Best-for) and \"issue triage\" (proactive Best-for) are near-indistinguishable.",
+      "impact": "A chooser with a recurring scan task cannot cleanly decide the type from triggers alone. (The prior *cross-skill* overlap with `diagnosing-bugs` is now well handled by the explicit routing sentence; this is the residual *intra-doc* overlap, hence P2.)",
+      "suggested_action": "One contrasting sentence — time-based = fixed discrete runs that each complete; proactive = continuous/event-stream processing where each subtask exits but the routine runs until disabled.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` (sections \"3. Time-Based Loop\" and \"4. Proactive Loop\")\n- Evidence: Time-Based `Trigger: interval or schedule.` Proactive `Trigger: event, queue, webhook, routine, or scheduled scan.` \"scheduled scan\" / \"routine\" appear in Proactive while \"schedule\" is the defining Time-Based trigger; \"periodic inbox triage\" (time-based Best-for) and \"issue triage\" (proactive Best-for) are near-indistinguishable.\n- Impact: A chooser with a recurring scan task cannot cleanly decide the type from triggers alone. (The prior *cross-skill* overlap with `diagnosing-bugs` is now well handled by the explicit routing sentence; this is the residual *intra-doc* overlap, hence P2.)\n- Suggested fix: One contrasting sentence — time-based = fixed discrete runs that each complete; proactive = continuous/event-stream processing where each subtask exits but the routine runs until disabled."
+    },
+    {
+      "id": "raw-26c524154e1a",
+      "title": "Does \"Getting started with loops\" have a canonical (non-translation) source? If so it should be cited so the model's fidelity can be checked",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Does \"Getting started with loops\" have a canonical (non-translation) source? If so it should be cited so the model's fidelity can be checked independently of the WeChat link (see P2 #2).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Questions",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Does \"Getting started with loops\" have a canonical (non-translation) source? If so it should be cited so the model's fidelity can be checked independently of the WeChat link (see P2 #2)."
+    },
+    {
+      "id": "raw-05ebf9c746ea",
+      "title": "For the \"platform-specific blocked policy\" stop condition — is this intended to map to a concrete platform behavior (e.g., Codex/Claude turn",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "For the \"platform-specific blocked policy\" stop condition — is this intended to map to a concrete platform behavior (e.g., Codex/Claude turn limits, rate limits) that should be named, or can it be dropped? (see P2 #1)",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Questions",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "For the \"platform-specific blocked policy\" stop condition — is this intended to map to a concrete platform behavior (e.g., Codex/Claude turn limits, rate limits) that should be named, or can it be dropped? (see P2 #1)"
+    },
+    {
+      "id": "raw-29084463457a",
+      "title": "No previous defect findings stood because my prior review reported no P0/P1/P2 issues.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "No previous defect findings stood because my prior review reported no P0/P1/P2 issues.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "No previous defect findings stood because my prior review reported no P0/P1/P2 issues."
+    },
+    {
+      "id": "raw-fdcc50e0059f",
+      "title": "Prior positive observations still stand: scheduled/proactive capability gating is explicit, write safeguards exist, advisory vs harness-enfo",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Prior positive observations still stand: scheduled/proactive capability gating is explicit, write safeguards exist, advisory vs harness-enforced boundaries are separated, and `diagnosing-bugs` overlap is mostly handled.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "Prior positive observations still stand: scheduled/proactive capability gating is explicit, write safeguards exist, advisory vs harness-enforced boundaries are separated, and `diagnosing-bugs` overlap is mostly handled."
+    },
+    {
+      "id": "raw-ba00815e3c97",
+      "title": "I retract the previous `STATUS: PASS` / “No P0/P1/P2 findings” conclusion. The file still has documentation gaps that are concrete enough fo",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "I retract the previous `STATUS: PASS` / “No P0/P1/P2 findings” conclusion. The file still has documentation gaps that are concrete enough for P2 revision.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Retracted Own Findings",
+      "peer_status": "retracted",
+      "confidence": "medium",
+      "raw_text": "I retract the previous `STATUS: PASS` / “No P0/P1/P2 findings” conclusion. The file still has documentation gaps that are concrete enough for P2 revision."
+    },
+    {
+      "id": "raw-cff8634cf246",
+      "title": "Undefined “platform-specific blocked policy” still stands.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Undefined “platform-specific blocked policy” still stands.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "P2: Undefined “platform-specific blocked policy” still stands."
+    },
+    {
+      "id": "raw-e9abdf966bae",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:80`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 80
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:80`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:80`"
+    },
+    {
+      "id": "raw-28eeef827036",
+      "title": "Evidence: goal-loop stop condition references “platform-specific blocked policy” without defining it.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "goal-loop stop condition references “platform-specific blocked policy” without defining it."
+        }
+      ],
+      "evidence_summary": "goal-loop stop condition references “platform-specific blocked policy” without defining it.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Evidence: goal-loop stop condition references “platform-specific blocked policy” without defining it."
+    },
+    {
+      "id": "raw-42bf65de5ec8",
+      "title": "Impact: this is a safety/stop condition, so ambiguity matters.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: this is a safety/stop condition, so ambiguity matters.",
+      "impact": "this is a safety/stop condition, so ambiguity matters.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Impact: this is a safety/stop condition, so ambiguity matters."
+    },
+    {
+      "id": "raw-cdfd94ea7479",
+      "title": "Suggested fix: replace with plain observable blockers like rate limit, quota, safety block, missing access, or repeated verifier failure.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: replace with plain observable blockers like rate limit, quota, safety block, missing access, or repeated verifier failure.",
+      "impact": "",
+      "suggested_action": "replace with plain observable blockers like rate limit, quota, safety block, missing access, or repeated verifier failure.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Suggested fix: replace with plain observable blockers like rate limit, quota, safety block, missing access, or repeated verifier failure."
+    },
+    {
+      "id": "raw-822cacd1819b",
+      "title": "Missing runnable in-session worked example stands.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Missing runnable in-session worked example stands.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "P2: Missing runnable in-session worked example stands."
+    },
+    {
+      "id": "raw-0521b1b94d15",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:278`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 278
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:278`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:278`"
+    },
+    {
+      "id": "raw-a38d1d985f1a",
+      "title": "Evidence: examples cover time-based PR review, vague UI-quality pushback, and daily email summary; none shows a bounded goal loop actually e",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "examples cover time-based PR review, vague UI-quality pushback, and daily email summary; none shows a bounded goal loop actually executable in-session."
+        }
+      ],
+      "evidence_summary": "examples cover time-based PR review, vague UI-quality pushback, and daily email summary; none shows a bounded goal loop actually executable in-session.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Evidence: examples cover time-based PR review, vague UI-quality pushback, and daily email summary; none shows a bounded goal loop actually executable in-session."
+    },
+    {
+      "id": "raw-e4089d56cc89",
+      "title": "Impact: the primary executable capability lacks a complete model output.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: the primary executable capability lacks a complete model output.",
+      "impact": "the primary executable capability lacks a complete model output.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Impact: the primary executable capability lacks a complete model output."
+    },
+    {
+      "id": "raw-ef36e524fa19",
+      "title": "Suggested fix: add one worked goal-loop example with contract, execution plan, checkpoint, and stop evidence.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: add one worked goal-loop example with contract, execution plan, checkpoint, and stop evidence.",
+      "impact": "",
+      "suggested_action": "add one worked goal-loop example with contract, execution plan, checkpoint, and stop evidence.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Suggested fix: add one worked goal-loop example with contract, execution plan, checkpoint, and stop evidence."
+    },
+    {
+      "id": "raw-e8ba3f1abaac",
+      "title": "Contract field definitions are still incomplete, revised from peer wording.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Contract field definitions are still incomplete, revised from peer wording.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "P2: Contract field definitions are still incomplete, revised from peer wording."
+    },
+    {
+      "id": "raw-e2596bab789a",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:35`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 35
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:35`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:35`"
+    },
+    {
+      "id": "raw-ad5997c306da",
+      "title": "Evidence: `Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are fields, but only evaluator categories and pro",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "`Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are fields, but only evaluator categories and progress signal are defined clearly."
+        }
+      ],
+      "evidence_summary": "`Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are fields, but only evaluator categories and progress signal are defined clearly.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Evidence: `Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are fields, but only evaluator categories and progress signal are defined clearly."
+    },
+    {
+      "id": "raw-d3ec52381935",
+      "title": "Impact: agents can conflate where state lives, what is observed, how it is checked, and who decides.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: agents can conflate where state lives, what is observed, how it is checked, and who decides.",
+      "impact": "agents can conflate where state lives, what is observed, how it is checked, and who decides.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Impact: agents can conflate where state lives, what is observed, how it is checked, and who decides."
+    },
+    {
+      "id": "raw-07c3fe84afcc",
+      "title": "Suggested fix: add one-line glosses for those four fields.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: add one-line glosses for those four fields.",
+      "impact": "",
+      "suggested_action": "add one-line glosses for those four fields.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Suggested fix: add one-line glosses for those four fields."
+    },
+    {
+      "id": "raw-9fac659eee59",
+      "title": "Capability Gate says what to verify, not how.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Capability Gate says what to verify, not how.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "P2: Capability Gate says what to verify, not how."
+    },
+    {
+      "id": "raw-248ae63e7b9c",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:145`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 145
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:145`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:145`"
+    },
+    {
+      "id": "raw-4a042f7c5496",
+      "title": "Evidence: runner, persistence, logs, cancel path, credentials, permissions, and recovery are listed as items, but no proof action is specifi",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "runner, persistence, logs, cancel path, credentials, permissions, and recovery are listed as items, but no proof action is specified."
+        }
+      ],
+      "evidence_summary": "runner, persistence, logs, cancel path, credentials, permissions, and recovery are listed as items, but no proof action is specified.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Evidence: runner, persistence, logs, cancel path, credentials, permissions, and recovery are listed as items, but no proof action is specified."
+    },
+    {
+      "id": "raw-c74666a8816d",
+      "title": "Impact: an agent may merely assert the gate instead of proving it.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: an agent may merely assert the gate instead of proving it.",
+      "impact": "an agent may merely assert the gate instead of proving it.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Impact: an agent may merely assert the gate instead of proving it."
+    },
+    {
+      "id": "raw-30cf508232e6",
+      "title": "Suggested fix: require a controlled dry-run/wake-up test, log check, state write/read check, and cancel-path verification where applicable.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: require a controlled dry-run/wake-up test, log check, state write/read check, and cancel-path verification where applicable.",
+      "impact": "",
+      "suggested_action": "require a controlled dry-run/wake-up test, log check, state write/read check, and cancel-path verification where applicable.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Suggested fix: require a controlled dry-run/wake-up test, log check, state write/read check, and cancel-path verification where applicable."
+    },
+    {
+      "id": "raw-3867cc101460",
+      "title": "Time-based vs proactive boundary remains blurry.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Time-based vs proactive boundary remains blurry.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "P2: Time-based vs proactive boundary remains blurry."
+    },
+    {
+      "id": "raw-275fa7936edb",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:106`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 106
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:106`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:106`"
+    },
+    {
+      "id": "raw-83a1cae88286",
+      "title": "Evidence: time-based trigger is “interval or schedule”; proactive trigger includes “routine, or scheduled scan.”",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "time-based trigger is “interval or schedule”; proactive trigger includes “routine, or scheduled scan.”"
+        }
+      ],
+      "evidence_summary": "time-based trigger is “interval or schedule”; proactive trigger includes “routine, or scheduled scan.”",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Evidence: time-based trigger is “interval or schedule”; proactive trigger includes “routine, or scheduled scan.”"
+    },
+    {
+      "id": "raw-d80993c5caa6",
+      "title": "Impact: recurring scan tasks can be classified either way.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: recurring scan tasks can be classified either way.",
+      "impact": "recurring scan tasks can be classified either way.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Impact: recurring scan tasks can be classified either way."
+    },
+    {
+      "id": "raw-d6fe83e1fc75",
+      "title": "Suggested fix: explicitly define time-based as fixed discrete runs, proactive as event/queue/stream handling or always-on processing.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: explicitly define time-based as fixed discrete runs, proactive as event/queue/stream handling or always-on processing.",
+      "impact": "",
+      "suggested_action": "explicitly define time-based as fixed discrete runs, proactive as event/queue/stream handling or always-on processing.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Suggested fix: explicitly define time-based as fixed discrete runs, proactive as event/queue/stream handling or always-on processing."
+    },
+    {
+      "id": "raw-7f7f75545fba",
+      "title": "None beyond the confirmed/revised peer findings.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "None beyond the confirmed/revised peer findings.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "None beyond the confirmed/revised peer findings."
+    },
+    {
+      "id": "raw-f0db032721db",
+      "title": "I reject the peer’s “permission denied” limitation as applicable here. I could read the target file and sibling descriptions.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "I reject the peer’s “permission denied” limitation as applicable here. I could read the target file and sibling descriptions.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Rejected Peer Findings",
+      "peer_status": "rejected",
+      "confidence": "medium",
+      "raw_text": "I reject the peer’s “permission denied” limitation as applicable here. I could read the target file and sibling descriptions."
+    },
+    {
+      "id": "raw-c73d2dd854fb",
+      "title": "I do not treat “directory contains only `SKILL.md`” as a defect. The skill can be self-contained; the issue is source verifiability, not fil",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "I do not treat “directory contains only `SKILL.md`” as a defect. The skill can be self-contained; the issue is source verifiability, not file count.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Rejected Peer Findings",
+      "peer_status": "rejected",
+      "confidence": "medium",
+      "raw_text": "I do not treat “directory contains only `SKILL.md`” as a defect. The skill can be self-contained; the issue is source verifiability, not file count."
+    },
+    {
+      "id": "raw-7cee8046f0b9",
+      "title": "Whether there is a canonical non-WeChat original for “Getting started with loops” needs source intent or web/source confirmation.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether there is a canonical non-WeChat original for “Getting started with loops” needs source intent or web/source confirmation.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Whether there is a canonical non-WeChat original for “Getting started with loops” needs source intent or web/source confirmation."
+    },
+    {
+      "id": "raw-f66af610f6bc",
+      "title": "Whether “platform-specific blocked policy” maps to a real Codex/Claude policy needs author intent unless it is rewritten in generic observab",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether “platform-specific blocked policy” maps to a real Codex/Claude policy needs author intent unless it is rewritten in generic observable terms.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Whether “platform-specific blocked policy” maps to a real Codex/Claude policy needs author intent unless it is rewritten in generic observable terms."
+    },
+    {
+      "id": "raw-7e4310431385",
+      "title": "**\"blocked policy\" stop condition still undefined.** Section \"2. Goal-Based Loop\": `Stop: the goal is met, the turn/attempt limit is reached",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**\"blocked policy\" stop condition still undefined.** Section \"2. Goal-Based Loop\": `Stop: the goal is met, the turn/attempt limit is reached, or the platform-specific blocked policy says to stop.` The intro caveat only neutralizes article *command names*, not borrowed *policies*. An agent that hasn't read the source will ignore or hallucinate this third stop condition.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**\"blocked policy\" stop condition still undefined.** Section \"2. Goal-Based Loop\": `Stop: the goal is met, the turn/attempt limit is reached, or the platform-specific blocked policy says to stop.` The intro caveat only neutralizes article *command names*, not borrowed *policies*. An agent that hasn't read the source will ignore or hallucinate this third stop condition."
+    },
+    {
+      "id": "raw-d3d65b0ba813",
+      "title": "**Source attribution fragile/unverifiable.** Intro: single walled-garden WeChat link, no canonical English original, no \"accessed\" date labe",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Source attribution fragile/unverifiable.** Intro: single walled-garden WeChat link, no canonical English original, no \"accessed\" date label, and the skill's foundational taxonomy depends on that link resolving.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**Source attribution fragile/unverifiable.** Intro: single walled-garden WeChat link, no canonical English original, no \"accessed\" date label, and the skill's foundational taxonomy depends on that link resolving."
+    },
+    {
+      "id": "raw-b4ec6b9f56e4",
+      "title": "**No runnable in-session example** despite in-session execution being the primary capability (turn-based + bounded goal-based). All three Ex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**No runnable in-session example** despite in-session execution being the primary capability (turn-based + bounded goal-based). All three Examples are non-runnable (time-based / pushback / time-based); the \"Good goal examples\" block gives statements, not a worked contract→plan→checkpoint→stop trace.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**No runnable in-session example** despite in-session execution being the primary capability (turn-based + bounded goal-based). All three Examples are non-runnable (time-based / pushback / time-based); the \"Good goal examples\" block gives statements, not a worked contract→plan→checkpoint→stop trace."
+    },
+    {
+      "id": "raw-9e8288ac3653",
+      "title": "**Four contract fields illustrated but not defined inline.** Only `Progress signal` gets an inline gloss; `Verification signal`, `Source of",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Four contract fields illustrated but not defined inline.** Only `Progress signal` gets an inline gloss; `Verification signal`, `Source of truth`, `Evaluator`, `Pass/fail authority` overlap conceptually and in Example 1 produce near-duplicate entries.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**Four contract fields illustrated but not defined inline.** Only `Progress signal` gets an inline gloss; `Verification signal`, `Source of truth`, `Evaluator`, `Pass/fail authority` overlap conceptually and in Example 1 produce near-duplicate entries."
+    },
+    {
+      "id": "raw-5137b942cfa2",
+      "title": "**Operational Capability Gate lists what to verify, not how.** Each item (Runner, Persistence, Logs, Cancel path, Credentials, Write permiss",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Operational Capability Gate lists what to verify, not how.** Each item (Runner, Persistence, Logs, Cancel path, Credentials, Write permissions, Recovery) names the thing to confirm; none names the verification action, so \"verify\" can be read as \"list.\"",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**Operational Capability Gate lists what to verify, not how.** Each item (Runner, Persistence, Logs, Cancel path, Credentials, Write permissions, Recovery) names the thing to confirm; none names the verification action, so \"verify\" can be read as \"list.\""
+    },
+    {
+      "id": "raw-6ded07caf9ab",
+      "title": "**Intra-doc trigger overlap between Time-Based and Proactive.** \"scheduled scan\"/\"routine\" appear in the Proactive trigger while \"schedule\"",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Intra-doc trigger overlap between Time-Based and Proactive.** \"scheduled scan\"/\"routine\" appear in the Proactive trigger while \"schedule\" defines Time-Based; \"periodic inbox triage\" (time-based) vs \"issue triage\" (proactive) are near-indistinguishable.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**Intra-doc trigger overlap between Time-Based and Proactive.** \"scheduled scan\"/\"routine\" appear in the Proactive trigger while \"schedule\" defines Time-Based; \"periodic inbox triage\" (time-based) vs \"issue triage\" (proactive) are near-indistinguishable."
+    },
+    {
+      "id": "raw-ba9d4b271aeb",
+      "title": "None. My prior review was STATUS: PASS with P2-only findings; re-checking against the supplied text, none were shown to be wrong.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "None. My prior review was STATUS: PASS with P2-only findings; re-checking against the supplied text, none were shown to be wrong.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Retracted Own Findings",
+      "peer_status": "retracted",
+      "confidence": "medium",
+      "raw_text": "None. My prior review was STATUS: PASS with P2-only findings; re-checking against the supplied text, none were shown to be wrong."
+    },
+    {
+      "id": "raw-88ab18d5cc8a",
+      "title": "Capability boundary is explicit and consistently enforced: `SKILL.md` \"Capability boundary\" + \"Operational Capability Gate\" + \"User-Facing O",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Capability boundary is explicit and consistently enforced: `SKILL.md` \"Capability boundary\" + \"Operational Capability Gate\" + \"User-Facing Output\" (`run only after the Operational Capability Gate passes` / `If the gate fails, produce the setup plan and stop`) + Example 1 Stop Rule (`Do not claim the recurring loop is running until runner, logs, state, and cancel path are verified.`). No target-state-as-current-fact leaks for scheduled loops.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Capability boundary is explicit and consistently enforced: `SKILL.md` \"Capability boundary\" + \"Operational Capability Gate\" + \"User-Facing Output\" (`run only after the Operational Capability Gate passes` / `If the gate fails, produce the setup plan and stop`) + Example 1 Stop Rule (`Do not claim the recurring loop is running until runner, logs, state, and cancel path are verified.`). No target-state-as-current-fact leaks for scheduled loops."
+    },
+    {
+      "id": "raw-4e4ee7069a32",
+      "title": "Slash-command ambiguity handled: no `/...` triggers; skill triggers via natural-language `description` phrases; article command names treate",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Slash-command ambiguity handled: no `/...` triggers; skill triggers via natural-language `description` phrases; article command names treated as concepts (`Treat platform-specific command names from that article as concepts unless the current environment exposes those commands`).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Slash-command ambiguity handled: no `/...` triggers; skill triggers via natural-language `description` phrases; article command names treated as concepts (`Treat platform-specific command names from that article as concepts unless the current environment exposes those commands`)."
+    },
+    {
+      "id": "raw-949ae3e67866",
+      "title": "Advisory vs enforceable boundaries cleanly split into \"Agent-discipline boundaries\" vs \"Harness-enforced boundaries,\" with the corrective `I",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Advisory vs enforceable boundaries cleanly split into \"Agent-discipline boundaries\" vs \"Harness-enforced boundaries,\" with the corrective `If there is no external harness, describe harness-enforced boundaries as requirements, not guarantees.`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Advisory vs enforceable boundaries cleanly split into \"Agent-discipline boundaries\" vs \"Harness-enforced boundaries,\" with the corrective `If there is no external harness, describe harness-enforced boundaries as requirements, not guarantees.`"
+    },
+    {
+      "id": "raw-a2f9876c0306",
+      "title": "Write-action safeguards concrete: `Write boundary` contract field, the \"For any loop that writes, define: Allowed files... Dirty-worktree ha",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Write-action safeguards concrete: `Write boundary` contract field, the \"For any loop that writes, define: Allowed files... Dirty-worktree handling... Rollback strategy. Per-pass acceptance criteria. Final human gate for merge, publish, send, delete, payment, or irreversible state changes,\" plus a Failure-Mode stop on `broad surface without a rollback story`.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Write-action safeguards concrete: `Write boundary` contract field, the \"For any loop that writes, define: Allowed files... Dirty-worktree handling... Rollback strategy. Per-pass acceptance criteria. Final human gate for merge, publish, send, delete, payment, or irreversible state changes,\" plus a Failure-Mode stop on `broad surface without a rollback story`."
+    },
+    {
+      "id": "raw-67972dea2762",
+      "title": "Evaluator/source-of-truth contract materially clearer: separate contract fields, evaluator constrained to four enumerated types including `H",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Evaluator/source-of-truth contract materially clearer: separate contract fields, evaluator constrained to four enumerated types including `Human judgment: user decides; do not pretend this is automated.`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Evaluator/source-of-truth contract materially clearer: separate contract fields, evaluator constrained to four enumerated types including `Human judgment: user decides; do not pretend this is automated.`"
+    },
+    {
+      "id": "raw-421c11c21611",
+      "title": "Cross-skill overlap with `diagnosing-bugs` addressed by the explicit routing sentence: `If the user reports a one-off bug, failing test, cra",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Cross-skill overlap with `diagnosing-bugs` addressed by the explicit routing sentence: `If the user reports a one-off bug, failing test, crash, or performance regression, prefer a debugging skill such as diagnosing-bugs.`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Cross-skill overlap with `diagnosing-bugs` addressed by the explicit routing sentence: `If the user reports a one-off bug, failing test, crash, or performance regression, prefer a debugging skill such as diagnosing-bugs.`"
+    },
+    {
+      "id": "raw-f7db7ad9391f",
+      "title": "No new file-grounded findings beyond the standing P2 set. The supplied text is unchanged on the lines the prior findings target, and the rea",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "No new file-grounded findings beyond the standing P2 set. The supplied text is unchanged on the lines the prior findings target, and the read limitation prevented discovering anything new.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "No new file-grounded findings beyond the standing P2 set. The supplied text is unchanged on the lines the prior findings target, and the read limitation prevented discovering anything new."
+    },
+    {
+      "id": "raw-e06d13429965",
+      "title": "(Reaffirmed) \"blocked policy\" stop term undefined — keep or replace",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"2. Goal-Based Loop\"",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "Stop:` line",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`...or the platform-specific blocked policy says to stop.` Undefined term in a safety-critical position; intro caveat covers command names, not policies.",
+      "impact": "Agent may ignore or hallucinate the third stop condition.",
+      "suggested_action": "Replace with `or a hard platform block (rate limit, safety block, quota) prevents progress,` or drop it.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md`, section \"2. Goal-Based Loop\", `Stop:` line\n- Evidence: `...or the platform-specific blocked policy says to stop.` Undefined term in a safety-critical position; intro caveat covers command names, not policies.\n- Impact: Agent may ignore or hallucinate the third stop condition.\n- Suggested fix: Replace with `or a hard platform block (rate limit, safety block, quota) prevents progress,` or drop it."
+    },
+    {
+      "id": "raw-467d391d9080",
+      "title": "(Reaffirmed) Add one in-session runnable example",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"Examples\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "All three examples are non-runnable (time-based / pushback / time-based); \"Good goal examples\" gives statements only.",
+      "impact": "No end-to-end model of the output the skill is actually permitted to produce for the loop types it runs in-session.",
+      "suggested_action": "One bounded goal-loop example (contract + execution plan + one checkpoint + stop-with-evidence) e.g. \"make the failing suite pass, ≤4 attempts, report smallest remaining failure.\"",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md`, section \"Examples\"\n- Evidence: All three examples are non-runnable (time-based / pushback / time-based); \"Good goal examples\" gives statements only.\n- Impact: No end-to-end model of the output the skill is actually permitted to produce for the loop types it runs in-session.\n- Suggested fix: One bounded goal-loop example (contract + execution plan + one checkpoint + stop-with-evidence) e.g. \"make the failing suite pass, ≤4 attempts, report smallest remaining failure.\""
+    },
+    {
+      "id": "raw-85a37c768b9d",
+      "title": "(Reaffirmed) Inline-gloss the four overlapping contract fields",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"Loop Contract\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Only `Progress signal` is glossed; the other four overlap (Example 1 lists near-duplicate values across `Verification signal`, `Source of truth`, `Evaluator`, `Pass/fail authority`).",
+      "impact": "",
+      "suggested_action": "One line each — source of truth = where; verification signal = what you observe; evaluator = how you check; pass/fail authority = who decides.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md`, section \"Loop Contract\"\n- Evidence: Only `Progress signal` is glossed; the other four overlap (Example 1 lists near-duplicate values across `Verification signal`, `Source of truth`, `Evaluator`, `Pass/fail authority`).\n- Suggested fix: One line each — source of truth = where; verification signal = what you observe; evaluator = how you check; pass/fail authority = who decides."
+    },
+    {
+      "id": "raw-c5ab5b2e2b45",
+      "title": "(Reaffirmed) Capability Gate needs verification actions, not just items",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"Operational Capability Gate\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Each bullet names what to confirm, not how; \"verify\" can be read as \"list.\"",
+      "impact": "",
+      "suggested_action": "For load-bearing items, add a concrete check, e.g. \"verify Runner and Cancel path by triggering one controlled test run and confirming it both fires and can be halted.\"",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md`, section \"Operational Capability Gate\"\n- Evidence: Each bullet names what to confirm, not how; \"verify\" can be read as \"list.\"\n- Suggested fix: For load-bearing items, add a concrete check, e.g. \"verify Runner and Cancel path by triggering one controlled test run and confirming it both fires and can be halted.\""
+    },
+    {
+      "id": "raw-4289c6ac8b02",
+      "title": "(Reaffirmed) Sharpen Time-Based vs Proactive trigger contrast",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "sections \"3. Time-Based Loop\" / \"4. Proactive Loop\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "\"scheduled scan\"/\"routine\" in Proactive vs \"schedule\" in Time-Based; \"periodic inbox triage\" vs \"issue triage\" near-indistinguishable.",
+      "impact": "",
+      "suggested_action": "One contrasting sentence — time-based = discrete runs that each complete; proactive = continuous/event-stream where each subtask exits but the routine runs until disabled.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md`, sections \"3. Time-Based Loop\" / \"4. Proactive Loop\"\n- Evidence: \"scheduled scan\"/\"routine\" in Proactive vs \"schedule\" in Time-Based; \"periodic inbox triage\" vs \"issue triage\" near-indistinguishable.\n- Suggested fix: One contrasting sentence — time-based = discrete runs that each complete; proactive = continuous/event-stream where each subtask exits but the routine runs until disabled."
+    },
+    {
+      "id": "raw-6a4220097f4c",
+      "title": "(Reaffirmed) Strengthen source attribution",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "intro after \"Getting started with loops\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Single walled-garden WeChat URL; no canonical original; date labeled as publish/read date ambiguously; model depends on link resolving.",
+      "impact": "",
+      "suggested_action": "Cite canonical English source if it exists; label `accessed 2026-07-07`; inline-summarize the model so the skill doesn't depend on the link.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md`, intro after \"Getting started with loops\"\n- Evidence: Single walled-garden WeChat URL; no canonical original; date labeled as publish/read date ambiguously; model depends on link resolving.\n- Suggested fix: Cite canonical English source if it exists; label `accessed 2026-07-07`; inline-summarize the model so the skill doesn't depend on the link."
+    },
+    {
+      "id": "raw-ad7db7c7be1f",
+      "title": "The peer reported **no P0/P1/P2 findings**, which I reject as complete only in the weak sense that the doc is acceptable to pass — but the p",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 20
+        }
+      ],
+      "evidence_summary": "The peer reported **no P0/P1/P2 findings**, which I reject as complete only in the weak sense that the doc is acceptable to pass — but the prior-reviewed P2 gaps (undefined \"blocked policy,\" missing in-session example, undefined contract-field glosses, \"verify\" with no verification action, intra-doc trigger overlap, single-link source attribution) are real and actionable and the peer omitted them. The peer's \"No P0/P1/P2 findings\" over-asserts cleanliness; the doc is PASS-with-P2-residuals, not ",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Rejected Peer Findings",
+      "peer_status": "rejected",
+      "confidence": "medium",
+      "raw_text": "The peer reported **no P0/P1/P2 findings**, which I reject as complete only in the weak sense that the doc is acceptable to pass — but the prior-reviewed P2 gaps (undefined \"blocked policy,\" missing in-session example, undefined contract-field glosses, \"verify\" with no verification action, intra-doc trigger overlap, single-link source attribution) are real and actionable and the peer omitted them. The peer's \"No P0/P1/P2 findings\" over-asserts cleanliness; the doc is PASS-with-P2-residuals, not zero-findings.\n\nThe peer's line-number citations (`SKILL.md:20`, `:143`, `:270`, etc.) could not be verified — I could not read the file to confirm those exact lines map to the quoted text, so I do not endorse the specific line numbers. The substantive claims behind them are correct per the supplied text.\n\n(Could not verify the peer's claim about exact `diagnosing-bugs` description semantics — sibling read was denied — but the routing sentence in the target stands on its own regardless.)"
+    },
+    {
+      "id": "raw-d32393029b16",
+      "title": "Whether \"Getting started with loops\" has a canonical (non-translation) English source to cite alongside the WeChat link, so the taxonomy's f",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether \"Getting started with loops\" has a canonical (non-translation) English source to cite alongside the WeChat link, so the taxonomy's fidelity becomes independently checkable (prior P2 #2).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Whether \"Getting started with loops\" has a canonical (non-translation) English source to cite alongside the WeChat link, so the taxonomy's fidelity becomes independently checkable (prior P2 #2)."
+    },
+    {
+      "id": "raw-c1e10f8f89bd",
+      "title": "Whether \"platform-specific blocked policy\" is meant to map to a concrete platform behavior (Codex/Claude turn limits, rate limits, safety bl",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether \"platform-specific blocked policy\" is meant to map to a concrete platform behavior (Codex/Claude turn limits, rate limits, safety blocks) that should be named, or dropped (prior P2 #1).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Whether \"platform-specific blocked policy\" is meant to map to a concrete platform behavior (Codex/Claude turn limits, rate limits, safety blocks) that should be named, or dropped (prior P2 #1)."
+    },
+    {
+      "id": "raw-2dade5c61101",
+      "title": "Sibling `description:` lines were unreadable this session; a human should confirm no current trigger-overlap remains between loop-designer's",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Sibling `description:` lines were unreadable this session; a human should confirm no current trigger-overlap remains between loop-designer's `description` and `diagnosing-bugs`/`tdd`/`handoff`/`prototype`/`agently-mail` for recurring-check and triage phrasings.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Sibling `description:` lines were unreadable this session; a human should confirm no current trigger-overlap remains between loop-designer's `description` and `diagnosing-bugs`/`tdd`/`handoff`/`prototype`/`agently-mail` for recurring-check and triage phrasings."
+    }
+  ],
+  "merged": [
+    {
+      "id": "finding-c4bf7e69cdb4",
+      "dedupe_key": "title:advisory vs enforceable boundaries cleanly split into agent-discipline boundaries vs harness-enforced boundaries correct",
+      "title": "Advisory vs enforceable boundaries cleanly split into \"Agent-discipline boundaries\" vs \"Harness-enforced boundaries,\" with the corrective `I",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Advisory vs enforceable boundaries cleanly split into \"Agent-discipline boundaries\" vs \"Harness-enforced boundaries,\" with the corrective `If there is no external harness, describe harness-enforced boundaries as requirements, not guarantees.`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-949ae3e67866"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-8157493d7f02",
+      "dedupe_key": "title:capability gate says what verify not how.",
+      "title": "Capability Gate says what to verify, not how.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Capability Gate says what to verify, not how.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-9fac659eee59"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-6cc4eb6c14f8",
+      "dedupe_key": "title:capability boundary explicit consistently enforced skill.md capability boundary operational capability gate user-facing ",
+      "title": "Capability boundary is explicit and consistently enforced: `SKILL.md` \"Capability boundary\" + \"Operational Capability Gate\" + \"User-Facing O",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Capability boundary is explicit and consistently enforced: `SKILL.md` \"Capability boundary\" + \"Operational Capability Gate\" + \"User-Facing Output\" (`run only after the Operational Capability Gate passes` / `If the gate fails, produce the setup plan and stop`) + Example 1 Stop Rule (`Do not claim the recurring loop is running until runner, logs, state, and cancel path are verified.`). No target-state-as-current-fact leaks for scheduled loops.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-88ab18d5cc8a"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-cd50c6b4b083",
+      "dedupe_key": "title:contract field definitions still incomplete revised from peer wording.",
+      "title": "Contract field definitions are still incomplete, revised from peer wording.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Contract field definitions are still incomplete, revised from peer wording.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-e8ba3f1abaac"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-03ee3e1df183",
+      "dedupe_key": "title:cross-skill overlap diagnosing-bugs addressed by explicit routing sentence if user reports one-off bug failing test cra",
+      "title": "Cross-skill overlap with `diagnosing-bugs` addressed by the explicit routing sentence: `If the user reports a one-off bug, failing test, cra",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Cross-skill overlap with `diagnosing-bugs` addressed by the explicit routing sentence: `If the user reports a one-off bug, failing test, crash, or performance regression, prefer a debugging skill such as diagnosing-bugs.`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-421c11c21611"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-d2b426c99adf",
+      "dedupe_key": "title:evaluator/source-of-truth contract materially clearer separate contract fields evaluator constrained four enumerated typ",
+      "title": "Evaluator/source-of-truth contract materially clearer: separate contract fields, evaluator constrained to four enumerated types including `H",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Evaluator/source-of-truth contract materially clearer: separate contract fields, evaluator constrained to four enumerated types including `Human judgment: user decides; do not pretend this is automated.`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-67972dea2762"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-f37429baa882",
+      "dedupe_key": "title:evidence verification signal source truth evaluator pass/fail authority fields but only evaluator categories pro",
+      "title": "Evidence: `Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are fields, but only evaluator categories and pro",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "`Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are fields, but only evaluator categories and progress signal are defined clearly."
+        }
+      ],
+      "evidence_summary": "`Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are fields, but only evaluator categories and progress signal are defined clearly.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-ad5997c306da"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-71ef3978f589",
+      "dedupe_key": "title:evidence examples cover time-based pr review vague ui-quality pushback daily email summary none shows bounded goal loop ",
+      "title": "Evidence: examples cover time-based PR review, vague UI-quality pushback, and daily email summary; none shows a bounded goal loop actually e",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "examples cover time-based PR review, vague UI-quality pushback, and daily email summary; none shows a bounded goal loop actually executable in-session."
+        }
+      ],
+      "evidence_summary": "examples cover time-based PR review, vague UI-quality pushback, and daily email summary; none shows a bounded goal loop actually executable in-session.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-a38d1d985f1a"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-0a7efb0035c9",
+      "dedupe_key": "title:evidence goal-loop stop condition references platform-specific blocked policy without defining it.",
+      "title": "Evidence: goal-loop stop condition references “platform-specific blocked policy” without defining it.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "goal-loop stop condition references “platform-specific blocked policy” without defining it."
+        }
+      ],
+      "evidence_summary": "goal-loop stop condition references “platform-specific blocked policy” without defining it.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-28eeef827036"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-e260f5e20f76",
+      "dedupe_key": "title:evidence runner persistence logs cancel path credentials permissions recovery listed as items but no proof action specif",
+      "title": "Evidence: runner, persistence, logs, cancel path, credentials, permissions, and recovery are listed as items, but no proof action is specifi",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "runner, persistence, logs, cancel path, credentials, permissions, and recovery are listed as items, but no proof action is specified."
+        }
+      ],
+      "evidence_summary": "runner, persistence, logs, cancel path, credentials, permissions, and recovery are listed as items, but no proof action is specified.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-4a042f7c5496"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-7b4cf56421db",
+      "dedupe_key": "title:evidence time-based trigger interval schedule proactive trigger includes routine scheduled scan.",
+      "title": "Evidence: time-based trigger is “interval or schedule”; proactive trigger includes “routine, or scheduled scan.”",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "reviewer_text",
+          "ref": "time-based trigger is “interval or schedule”; proactive trigger includes “routine, or scheduled scan.”"
+        }
+      ],
+      "evidence_summary": "time-based trigger is “interval or schedule”; proactive trigger includes “routine, or scheduled scan.”",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-83a1cae88286"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-8893337f70ff",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:21:file /users/bobo/.agents/skills/loop-designer/skill.md 106",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:106`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 106
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:106`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-275fa7936edb"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-583485da4834",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:29:file /users/bobo/.agents/skills/loop-designer/skill.md 145",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:145`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 145
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:145`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-248ae63e7b9c"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-722029fde1f7",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:55:file /users/bobo/.agents/skills/loop-designer/skill.md 278",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:278`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 278
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:278`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-0521b1b94d15"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-9440fccbcf3a",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:7:file /users/bobo/.agents/skills/loop-designer/skill.md 35",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:35`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 35
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:35`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-e2596bab789a"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-fd5752e0569b",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:16:file /users/bobo/.agents/skills/loop-designer/skill.md 80",
+      "title": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:80`",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 80
+        }
+      ],
+      "evidence_summary": "File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:80`",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-e9abdf966bae"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-3a521409af50",
+      "dedupe_key": "title:impact agents can conflate where state lives what observed how it checked who decides.",
+      "title": "Impact: agents can conflate where state lives, what is observed, how it is checked, and who decides.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: agents can conflate where state lives, what is observed, how it is checked, and who decides.",
+      "impact": "agents can conflate where state lives, what is observed, how it is checked, and who decides.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-d3ec52381935"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-a63dd6a0cde6",
+      "dedupe_key": "title:impact agent may merely assert gate instead proving it.",
+      "title": "Impact: an agent may merely assert the gate instead of proving it.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: an agent may merely assert the gate instead of proving it.",
+      "impact": "an agent may merely assert the gate instead of proving it.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-c74666a8816d"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-8c0666791539",
+      "dedupe_key": "title:impact recurring scan tasks can be classified either way.",
+      "title": "Impact: recurring scan tasks can be classified either way.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: recurring scan tasks can be classified either way.",
+      "impact": "recurring scan tasks can be classified either way.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-d80993c5caa6"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-d4878295214b",
+      "dedupe_key": "title:impact primary executable capability lacks complete model output.",
+      "title": "Impact: the primary executable capability lacks a complete model output.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: the primary executable capability lacks a complete model output.",
+      "impact": "the primary executable capability lacks a complete model output.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-e4089d56cc89"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-15ab48b7c599",
+      "dedupe_key": "title:impact this safety/stop condition so ambiguity matters.",
+      "title": "Impact: this is a safety/stop condition, so ambiguity matters.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Impact: this is a safety/stop condition, so ambiguity matters.",
+      "impact": "this is a safety/stop condition, so ambiguity matters.",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-42bf65de5ec8"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-0433311ae4b5",
+      "dedupe_key": "title:missing runnable in-session worked example stands.",
+      "title": "Missing runnable in-session worked example stands.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Missing runnable in-session worked example stands.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-822cacd1819b"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-072649177983",
+      "dedupe_key": "title:slash-command ambiguity handled no /... triggers skill triggers via natural-language description phrases article command",
+      "title": "Slash-command ambiguity handled: no `/...` triggers; skill triggers via natural-language `description` phrases; article command names treate",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Slash-command ambiguity handled: no `/...` triggers; skill triggers via natural-language `description` phrases; article command names treated as concepts (`Treat platform-specific command names from that article as concepts unless the current environment exposes those commands`).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-4e4ee7069a32"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-3e5102a79ebf",
+      "dedupe_key": "title:suggested fix add one worked goal-loop example contract execution plan checkpoint stop evidence.",
+      "title": "Suggested fix: add one worked goal-loop example with contract, execution plan, checkpoint, and stop evidence.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: add one worked goal-loop example with contract, execution plan, checkpoint, and stop evidence.",
+      "impact": "",
+      "suggested_action": "add one worked goal-loop example with contract, execution plan, checkpoint, and stop evidence.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-ef36e524fa19"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-460ac4d81188",
+      "dedupe_key": "title:suggested fix add one-line glosses those four fields.",
+      "title": "Suggested fix: add one-line glosses for those four fields.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: add one-line glosses for those four fields.",
+      "impact": "",
+      "suggested_action": "add one-line glosses for those four fields.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-07c3fe84afcc"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-c3ef0ea93d6a",
+      "dedupe_key": "title:suggested fix explicitly define time-based as fixed discrete runs proactive as event/queue/stream handling always-on pro",
+      "title": "Suggested fix: explicitly define time-based as fixed discrete runs, proactive as event/queue/stream handling or always-on processing.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: explicitly define time-based as fixed discrete runs, proactive as event/queue/stream handling or always-on processing.",
+      "impact": "",
+      "suggested_action": "explicitly define time-based as fixed discrete runs, proactive as event/queue/stream handling or always-on processing.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-d6fe83e1fc75"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-3a04a33bc459",
+      "dedupe_key": "title:suggested fix replace plain observable blockers like rate limit quota safety block missing access repeated verifier fail",
+      "title": "Suggested fix: replace with plain observable blockers like rate limit, quota, safety block, missing access, or repeated verifier failure.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: replace with plain observable blockers like rate limit, quota, safety block, missing access, or repeated verifier failure.",
+      "impact": "",
+      "suggested_action": "replace with plain observable blockers like rate limit, quota, safety block, missing access, or repeated verifier failure.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-cdfd94ea7479"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-56ab595a4b4d",
+      "dedupe_key": "title:suggested fix require controlled dry-run/wake-up test log check state write/read check cancel-path verification where ap",
+      "title": "Suggested fix: require a controlled dry-run/wake-up test, log check, state write/read check, and cancel-path verification where applicable.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Suggested fix: require a controlled dry-run/wake-up test, log check, state write/read check, and cancel-path verification where applicable.",
+      "impact": "",
+      "suggested_action": "require a controlled dry-run/wake-up test, log check, state write/read check, and cancel-path verification where applicable.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-30cf508232e6"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-68bb496cd64c",
+      "dedupe_key": "title:time-based vs proactive boundary remains blurry.",
+      "title": "Time-based vs proactive boundary remains blurry.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Time-based vs proactive boundary remains blurry.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-3867cc101460"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-66e487ccd8e9",
+      "dedupe_key": "title:undefined platform-specific blocked policy still stands.",
+      "title": "Undefined “platform-specific blocked policy” still stands.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "P2: Undefined “platform-specific blocked policy” still stands.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-cff8634cf246"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-725d228ae3c9",
+      "dedupe_key": "title:write-action safeguards concrete write boundary contract field any loop that writes define allowed files... dirty-worktr",
+      "title": "Write-action safeguards concrete: `Write boundary` contract field, the \"For any loop that writes, define: Allowed files... Dirty-worktree ha",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Write-action safeguards concrete: `Write boundary` contract field, the \"For any loop that writes, define: Allowed files... Dirty-worktree handling... Rollback strategy. Per-pass acceptance criteria. Final human gate for merge, publish, send, delete, payment, or irreversible state changes,\" plus a Failure-Mode stop on `broad surface without a rollback story`.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-a2f9876c0306"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-dd7930534b2a",
+      "dedupe_key": "file:SKILL.md:reaffirmed blocked policy stop term undefined keep replace",
+      "title": "(Reaffirmed) \"blocked policy\" stop term undefined — keep or replace",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"2. Goal-Based Loop\"",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "Stop:` line",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`...or the platform-specific blocked policy says to stop.` Undefined term in a safety-critical position; intro caveat covers command names, not policies.",
+      "impact": "Agent may ignore or hallucinate the third stop condition.",
+      "suggested_action": "Replace with `or a hard platform block (rate limit, safety block, quota) prevents progress,` or drop it.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-e06d13429965"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-59aba6b941f5",
+      "dedupe_key": "file:SKILL.md:reaffirmed add one in-session runnable example",
+      "title": "(Reaffirmed) Add one in-session runnable example",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"Examples\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "All three examples are non-runnable (time-based / pushback / time-based); \"Good goal examples\" gives statements only.",
+      "impact": "No end-to-end model of the output the skill is actually permitted to produce for the loop types it runs in-session.",
+      "suggested_action": "One bounded goal-loop example (contract + execution plan + one checkpoint + stop-with-evidence) e.g. \"make the failing suite pass, ≤4 attempts, report smallest remaining failure.\"",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-467d391d9080"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-d0c7594fcdd5",
+      "dedupe_key": "file:SKILL.md:reaffirmed capability gate needs verification actions not just items",
+      "title": "(Reaffirmed) Capability Gate needs verification actions, not just items",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"Operational Capability Gate\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Each bullet names what to confirm, not how; \"verify\" can be read as \"list.\"",
+      "impact": "",
+      "suggested_action": "For load-bearing items, add a concrete check, e.g. \"verify Runner and Cancel path by triggering one controlled test run and confirming it both fires and can be halted.\"",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-c5ab5b2e2b45"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-7d5c27a1f66b",
+      "dedupe_key": "file:SKILL.md:reaffirmed inline-gloss four overlapping contract fields",
+      "title": "(Reaffirmed) Inline-gloss the four overlapping contract fields",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "section \"Loop Contract\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Only `Progress signal` is glossed; the other four overlap (Example 1 lists near-duplicate values across `Verification signal`, `Source of truth`, `Evaluator`, `Pass/fail authority`).",
+      "impact": "",
+      "suggested_action": "One line each — source of truth = where; verification signal = what you observe; evaluator = how you check; pass/fail authority = who decides.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-85a37c768b9d"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-b4b6aeaa6841",
+      "dedupe_key": "file:SKILL.md:reaffirmed sharpen time-based vs proactive trigger contrast",
+      "title": "(Reaffirmed) Sharpen Time-Based vs Proactive trigger contrast",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "sections \"3. Time-Based Loop\" / \"4. Proactive Loop\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "\"scheduled scan\"/\"routine\" in Proactive vs \"schedule\" in Time-Based; \"periodic inbox triage\" vs \"issue triage\" near-indistinguishable.",
+      "impact": "",
+      "suggested_action": "One contrasting sentence — time-based = discrete runs that each complete; proactive = continuous/event-stream where each subtask exits but the routine runs until disabled.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-4289c6ac8b02"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-f78914395c19",
+      "dedupe_key": "file:SKILL.md:reaffirmed strengthen source attribution",
+      "title": "(Reaffirmed) Strengthen source attribution",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "intro after \"Getting started with loops\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Single walled-garden WeChat URL; no canonical original; date labeled as publish/read date ambiguously; model depends on link resolving.",
+      "impact": "",
+      "suggested_action": "Cite canonical English source if it exists; label `accessed 2026-07-07`; inline-summarize the model so the skill doesn't depend on the link.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-6a4220097f4c"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-44e62a0f030a",
+      "dedupe_key": "title:blocked policy stop condition still undefined. section 2. goal-based loop stop goal met turn/attempt limit reached",
+      "title": "**\"blocked policy\" stop condition still undefined.** Section \"2. Goal-Based Loop\": `Stop: the goal is met, the turn/attempt limit is reached",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**\"blocked policy\" stop condition still undefined.** Section \"2. Goal-Based Loop\": `Stop: the goal is met, the turn/attempt limit is reached, or the platform-specific blocked policy says to stop.` The intro caveat only neutralizes article *command names*, not borrowed *policies*. An agent that hasn't read the source will ignore or hallucinate this third stop condition.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-7e4310431385"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-867e16fdc2e7",
+      "dedupe_key": "title:four contract fields illustrated but not defined inline. only progress signal gets inline gloss verification signal sour",
+      "title": "**Four contract fields illustrated but not defined inline.** Only `Progress signal` gets an inline gloss; `Verification signal`, `Source of",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Four contract fields illustrated but not defined inline.** Only `Progress signal` gets an inline gloss; `Verification signal`, `Source of truth`, `Evaluator`, `Pass/fail authority` overlap conceptually and in Example 1 produce near-duplicate entries.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-9e8288ac3653"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-680b233e3091",
+      "dedupe_key": "title:intra-doc trigger overlap between time-based proactive. scheduled scan / routine appear proactive trigger while schedule",
+      "title": "**Intra-doc trigger overlap between Time-Based and Proactive.** \"scheduled scan\"/\"routine\" appear in the Proactive trigger while \"schedule\"",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Intra-doc trigger overlap between Time-Based and Proactive.** \"scheduled scan\"/\"routine\" appear in the Proactive trigger while \"schedule\" defines Time-Based; \"periodic inbox triage\" (time-based) vs \"issue triage\" (proactive) are near-indistinguishable.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-6ded07caf9ab"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-d45df41ba091",
+      "dedupe_key": "title:no runnable in-session example despite in-session execution being primary capability turn-based bounded goal-based . all",
+      "title": "**No runnable in-session example** despite in-session execution being the primary capability (turn-based + bounded goal-based). All three Ex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**No runnable in-session example** despite in-session execution being the primary capability (turn-based + bounded goal-based). All three Examples are non-runnable (time-based / pushback / time-based); the \"Good goal examples\" block gives statements, not a worked contract→plan→checkpoint→stop trace.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-b4ec6b9f56e4"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-2f5d7b4ef4b4",
+      "dedupe_key": "title:operational capability gate lists what verify not how. each item runner persistence logs cancel path credentials write p",
+      "title": "**Operational Capability Gate lists what to verify, not how.** Each item (Runner, Persistence, Logs, Cancel path, Credentials, Write permiss",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Operational Capability Gate lists what to verify, not how.** Each item (Runner, Persistence, Logs, Cancel path, Credentials, Write permissions, Recovery) names the thing to confirm; none names the verification action, so \"verify\" can be read as \"list.\"",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-5137b942cfa2"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-cf57328657ce",
+      "dedupe_key": "title:source attribution fragile/unverifiable. intro single walled-garden wechat link no canonical english original no accesse",
+      "title": "**Source attribution fragile/unverifiable.** Intro: single walled-garden WeChat link, no canonical English original, no \"accessed\" date labe",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**Source attribution fragile/unverifiable.** Intro: single walled-garden WeChat link, no canonical English original, no \"accessed\" date label, and the skill's foundational taxonomy depends on that link resolving.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-d3d65b0ba813"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-672c0f9fcbac",
+      "dedupe_key": "file:SKILL.md` (section \"Operational Capability Gate\"):capability gate lists what verify but not how",
+      "title": "Capability Gate lists what to verify but not how",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"Operational Capability Gate\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`Before executing a time-based or proactive loop, verify: Runner: ... Persistence: ... Logs: ... Cancel path: ... Credentials: ... Write permissions: ... Recovery: ...` — each item names the thing to confirm, none names the verification action.",
+      "impact": "An agent can satisfy \"Runner\" by naming a cron entry without proving it actually wakes the loop, or \"Cancel path\" by asserting one exists. The gate's purpose (only run after verification) is undermined if \"verify\" is read as \"list.\"",
+      "suggested_action": "Add a concrete check for the load-bearing items, e.g., \"verify Runner and Cancel path by triggering one controlled test run and confirming it both fires and can be halted.\"",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-6ddf0e9b1c70"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-fbd6471add85",
+      "dedupe_key": "title:does getting started loops have canonical non-translation source if so it should be cited so model s fidelity can be che",
+      "title": "Does \"Getting started with loops\" have a canonical (non-translation) source? If so it should be cited so the model's fidelity can be checked",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Does \"Getting started with loops\" have a canonical (non-translation) source? If so it should be cited so the model's fidelity can be checked independently of the WeChat link (see P2 #2).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-26c524154e1a"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-506509a6aa89",
+      "dedupe_key": "title:platform-specific blocked policy stop condition this intended map concrete platform behavior e.g. codex/claude turn",
+      "title": "For the \"platform-specific blocked policy\" stop condition — is this intended to map to a concrete platform behavior (e.g., Codex/Claude turn",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "For the \"platform-specific blocked policy\" stop condition — is this intended to map to a concrete platform behavior (e.g., Codex/Claude turn limits, rate limits) that should be named, or can it be dropped? (see P2 #1)",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-05ebf9c746ea"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-73bdd8c91dde",
+      "dedupe_key": "file:SKILL.md` (section \"Loop Contract\"):four contract fields illustrated but not defined inline",
+      "title": "Four contract fields are illustrated but not defined inline",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"Loop Contract\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`Progress signal means what must change between attempts...` is the only field given an inline definition. `Verification signal`, `Source of truth`, `Evaluator`, and `Pass/fail authority` are shown only by example and overlap conceptually (e.g., in Example 1, \"GitHub review thread count plus CI status\" vs \"GitHub PR checks and review threads\" vs \"Deterministic GitHub API queries\").",
+      "impact": "An agent filling the contract can conflate *what is observed* (signal), *where state lives* (source of truth), *how it is checked* (evaluator), and *who decides* (authority), producing redundant or contradictory entries.",
+      "suggested_action": "One-line gloss for each, or a single sentence: source of truth = where; verification signal = what you observe; evaluator = how you check; pass/fail authority = who decides.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-14eee3d98769"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-8514192ff3da",
+      "dedupe_key": "title:i do not treat directory contains only skill.md as defect. skill can be self-contained issue source verifiability not fi",
+      "title": "I do not treat “directory contains only `SKILL.md`” as a defect. The skill can be self-contained; the issue is source verifiability, not fil",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "I do not treat “directory contains only `SKILL.md`” as a defect. The skill can be self-contained; the issue is source verifiability, not file count.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-c73d2dd854fb"
+      ],
+      "peer_status": "rejected",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-3e12e0f2c4f7",
+      "dedupe_key": "title:i reject peer s permission denied limitation as applicable here. i could read target file sibling descriptions.",
+      "title": "I reject the peer’s “permission denied” limitation as applicable here. I could read the target file and sibling descriptions.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "I reject the peer’s “permission denied” limitation as applicable here. I could read the target file and sibling descriptions.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-f0db032721db"
+      ],
+      "peer_status": "rejected",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-5bd60ed54572",
+      "dedupe_key": "file:SKILL.md` (sections \"3. Time-Based Loop\":intra-doc trigger overlap between time-based proactive",
+      "title": "Intra-doc trigger overlap between Time-Based and Proactive",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (sections \"3. Time-Based Loop\"",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "\"4. Proactive Loop\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Time-Based `Trigger: interval or schedule.` Proactive `Trigger: event, queue, webhook, routine, or scheduled scan.` \"scheduled scan\" / \"routine\" appear in Proactive while \"schedule\" is the defining Time-Based trigger; \"periodic inbox triage\" (time-based Best-for) and \"issue triage\" (proactive Best-for) are near-indistinguishable.",
+      "impact": "A chooser with a recurring scan task cannot cleanly decide the type from triggers alone. (The prior *cross-skill* overlap with `diagnosing-bugs` is now well handled by the explicit routing sentence; this is the residual *intra-doc* overlap, hence P2.)",
+      "suggested_action": "One contrasting sentence — time-based = fixed discrete runs that each complete; proactive = continuous/event-stream processing where each subtask exits but the routine runs until disabled.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-f022fdc1a501"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-2019c0abf911",
+      "dedupe_key": "title:no //findings.",
+      "title": "No P0/P1/P2 findings.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "No P0/P1/P2 findings.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_cards": [
+        "raw-0934487a52b6"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-9f84f7b3b294",
+      "dedupe_key": "title:no new file-grounded findings beyond standing set. supplied text unchanged on lines prior findings target rea",
+      "title": "No new file-grounded findings beyond the standing P2 set. The supplied text is unchanged on the lines the prior findings target, and the rea",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "No new file-grounded findings beyond the standing P2 set. The supplied text is unchanged on the lines the prior findings target, and the read limitation prevented discovering anything new.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-f7db7ad9391f"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-9b066dcb2b02",
+      "dedupe_key": "title:no previous defect findings stood because my prior review reported no //issues.",
+      "title": "No previous defect findings stood because my prior review reported no P0/P1/P2 issues.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "No previous defect findings stood because my prior review reported no P0/P1/P2 issues.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-29084463457a"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-7ded8372c1ee",
+      "dedupe_key": "file:SKILL.md` (section \"Examples\"):no runnable in-session example despite in-session execution being primary capabi",
+      "title": "No runnable in-session example despite in-session execution being the primary capability",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"Examples\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The Capability boundary and \"User-Facing Output\" say turn-based and bounded goal-style loops *can run in the current session*, yet all three examples are non-runnable from this skill's perspective: Example 1 is time-based (gated on a runner), Example 2 is a pushback on a vague goal, Example 3 is time-based. The \"Good goal examples\" block gives goal *statements* but no worked design→execute trace.",
+      "impact": "A reader/agent has no model of the full output it is actually permitted to produce end-to-end (Loop Contract + Execution Plan + Checkpoint + Stop Rule) for the loop types it runs. This is a completeness gap for the intended reader.",
+      "suggested_action": "Add one bounded goal-loop example that can execute in-session (e.g., \"make the failing suite pass, ≤4 attempts, report smallest remaining failure\") showing contract, plan, a checkpoint, and the stop-with-evidence rule.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-244ba08b03ab"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-f498a9d134d7",
+      "dedupe_key": "title:none beyond confirmed/revised peer findings.",
+      "title": "None beyond the confirmed/revised peer findings.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "None beyond the confirmed/revised peer findings.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-7f7f75545fba"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-7bff8e7a8db4",
+      "dedupe_key": "title:prior positive observations still stand scheduled/proactive capability gating explicit write safeguards exist advisory v",
+      "title": "Prior positive observations still stand: scheduled/proactive capability gating is explicit, write safeguards exist, advisory vs harness-enfo",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "Prior positive observations still stand: scheduled/proactive capability gating is explicit, write safeguards exist, advisory vs harness-enforced boundaries are separated, and `diagnosing-bugs` overlap is mostly handled.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-fdcc50e0059f"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-dfeddf702197",
+      "dedupe_key": "title:sibling description lines were unreadable this session human should confirm no current trigger-overlap remains between l",
+      "title": "Sibling `description:` lines were unreadable this session; a human should confirm no current trigger-overlap remains between loop-designer's",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Sibling `description:` lines were unreadable this session; a human should confirm no current trigger-overlap remains between loop-designer's `description` and `diagnosing-bugs`/`tdd`/`handoff`/`prototype`/`agently-mail` for recurring-check and triage phrasings.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-2dade5c61101"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-695853fae302",
+      "dedupe_key": "file:SKILL.md` (intro:source attribution present but fragile unverifiable",
+      "title": "Source attribution is present but fragile and unverifiable",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (intro",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "after \"Getting started with loops\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The entire conceptual model is sourced to a single walled-garden link: `Source read for this skill: WeChat translation \"...\", 宝玉AI, 2026-07-07, https://mp.weixin.qq.com/s/...`. No canonical English original is cited; the URL is the kind that rots, geo-restricts, or edits silently, and I could not fetch it here.",
+      "impact": "A future reader/agent cannot verify that the turn/goal/time/proactive taxonomy and the role-separation diagram actually came from \"Getting started with loops.\" If the link decays, the skill's foundational claim becomes uncheckable. (The doc is hedged, so this is verifiability, not an over-claim.)",
+      "suggested_action": "If a canonical English source exists, cite it alongside the WeChat translation; label the date as \"accessed 2026-07-07\" to disambiguate from publish date; and inline-summarize the model so the skill does not depend on the link resolving.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-7010b61c42c5"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-e0d67f818fac",
+      "dedupe_key": "title:peer reported no //findings which i reject as complete only weak sense that doc acceptable pass but p",
+      "title": "The peer reported **no P0/P1/P2 findings**, which I reject as complete only in the weak sense that the doc is acceptable to pass — but the p",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 20
+        }
+      ],
+      "evidence_summary": "The peer reported **no P0/P1/P2 findings**, which I reject as complete only in the weak sense that the doc is acceptable to pass — but the prior-reviewed P2 gaps (undefined \"blocked policy,\" missing in-session example, undefined contract-field glosses, \"verify\" with no verification action, intra-doc trigger overlap, single-link source attribution) are real and actionable and the peer omitted them. The peer's \"No P0/P1/P2 findings\" over-asserts cleanliness; the doc is PASS-with-P2-residuals, not ",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-ad7db7c7be1f"
+      ],
+      "peer_status": "rejected",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-3b34141e4faa",
+      "dedupe_key": "file:SKILL.md` (section \"2. Goal-Based Loop\":undefined borrowed concept blocked policy embedded stop condition",
+      "title": "Undefined borrowed concept \"blocked policy\" embedded in a stop condition",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` (section \"2. Goal-Based Loop\"",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "Stop:` line)",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`Stop: the goal is met, the turn/attempt limit is reached, or the platform-specific blocked policy says to stop.` The opening caveat only neutralizes *command names* from the source article (\"Treat platform-specific command names from that article as concepts\"), not borrowed *policies*.",
+      "impact": "An agent filling/executing a goal loop that has never read the source article will either ignore this third stop condition or hallucinate a meaning. Stop conditions are safety-critical; undefined terms there are exactly the \"ambiguous steps\" the lens flags.",
+      "suggested_action": "Replace with plain language, e.g. \"or a hard platform block (rate limit, safety block, quota) prevents progress,\" or drop it since the other two conditions already cover the realistic cases.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-5fe423642dba"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-92afba939179",
+      "dedupe_key": "title:whether getting started loops has canonical non-translation english source cite alongside wechat link so taxonomy s f",
+      "title": "Whether \"Getting started with loops\" has a canonical (non-translation) English source to cite alongside the WeChat link, so the taxonomy's f",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether \"Getting started with loops\" has a canonical (non-translation) English source to cite alongside the WeChat link, so the taxonomy's fidelity becomes independently checkable (prior P2 #2).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-d32393029b16"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-ce9721b8b99a",
+      "dedupe_key": "title:whether platform-specific blocked policy meant map concrete platform behavior codex/claude turn limits rate limits safet",
+      "title": "Whether \"platform-specific blocked policy\" is meant to map to a concrete platform behavior (Codex/Claude turn limits, rate limits, safety bl",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether \"platform-specific blocked policy\" is meant to map to a concrete platform behavior (Codex/Claude turn limits, rate limits, safety blocks) that should be named, or dropped (prior P2 #1).",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-c1e10f8f89bd"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-4727636ab6e2",
+      "dedupe_key": "title:whether there canonical non-wechat original getting started loops needs source intent web/source confirmation.",
+      "title": "Whether there is a canonical non-WeChat original for “Getting started with loops” needs source intent or web/source confirmation.",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether there is a canonical non-WeChat original for “Getting started with loops” needs source intent or web/source confirmation.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-7cee8046f0b9"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-4e3d81f238bf",
+      "dedupe_key": "title:whether platform-specific blocked policy maps real codex/claude policy needs author intent unless it rewritten generic o",
+      "title": "Whether “platform-specific blocked policy” maps to a real Codex/Claude policy needs author intent unless it is rewritten in generic observab",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Whether “platform-specific blocked policy” maps to a real Codex/Claude policy needs author intent unless it is rewritten in generic observable terms.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-f66af610f6bc"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    }
+  ]
+}

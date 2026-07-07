@@ -1,0 +1,2292 @@
+{
+  "meta": {
+    "profile": "normal",
+    "mode": "uncommitted",
+    "scope": "external",
+    "review_type": "documentation",
+    "arbiter": "none",
+    "diff_truncated": false
+  },
+  "raw": [
+    {
+      "id": "raw-13a00427d49d",
+      "title": "Recurring/proactive loops are presented as executable without a capability gate",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 3
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 78
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 94
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 201
+        }
+      ],
+      "evidence_summary": "The description says “Design and run practical AI agent loops” and includes `/schedule`, recurring monitors, and proactive workflows. The execution section says “return the contract first, then run the loop.” But the current Codex tool surface has goal-state helpers, not a durable scheduler/background worker. The examples also include “每 10 分钟看一下 PR review” and “每天早上总结我的邮件” without requiring an execution substrate.",
+      "impact": "The skill can cause an agent to imply that a scheduled/proactive loop is actually running when only a design was produced, or when persistence/logging/cancel behavior is unavailable.",
+      "suggested_action": "Add an “Operational Capability Gate” before executing time-based/proactive loops: identify runtime substrate, credentials, persistence location, logging, cancel path, write permissions, and whether this environment can actually keep running. If not, output a design plus concrete setup steps, not “run the loop.”",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:3`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:78`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:94`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:201`\n- Evidence: The description says “Design and run practical AI agent loops” and includes `/schedule`, recurring monitors, and proactive workflows. The execution section says “return the contract first, then run the loop.” But the current Codex tool surface has goal-state helpers, not a durable scheduler/background worker. The examples also include “每 10 分钟看一下 PR review” and “每天早上总结我的邮件” without requiring an execution substrate.\n- Impact: The skill can cause an agent to imply that a scheduled/proactive loop is actually running when only a design was produced, or when persistence/logging/cancel behavior is unavailable.\n- Suggested fix: Add an “Operational Capability Gate” before executing time-based/proactive loops: identify runtime substrate, credentials, persistence location, logging, cancel path, write permissions, and whether this environment can actually keep running. If not, output a design plus concrete setup steps, not “run the loop.”"
+    },
+    {
+      "id": "raw-bd1188f24b1b",
+      "title": "Goal evaluator is under-specified",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 22
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 56
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 57
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 128
+        }
+      ],
+      "evidence_summary": "The document mentions an evaluator checking the condition, but the Loop Contract has only “Verification signal,” not who or what evaluates it. There is no required source of truth, evaluator type, or pass/fail authority.",
+      "impact": "For goal loops, this weakens the central contract. The agent may treat subjective self-judgment as an objective verifier, especially for artifact quality, UI quality, summaries, reviews, or “make it better” style requests.",
+      "suggested_action": "Add contract fields like `Source of truth`, `Evaluator`, and `Pass/fail authority`. Require evaluator classification: deterministic command, external system state, second-agent review, or human judgment.",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:22`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:56`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:57`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:128`\n- Evidence: The document mentions an evaluator checking the condition, but the Loop Contract has only “Verification signal,” not who or what evaluates it. There is no required source of truth, evaluator type, or pass/fail authority.\n- Impact: For goal loops, this weakens the central contract. The agent may treat subjective self-judgment as an objective verifier, especially for artifact quality, UI quality, summaries, reviews, or “make it better” style requests.\n- Suggested fix: Add contract fields like `Source of truth`, `Evaluator`, and `Pass/fail authority`. Require evaluator classification: deterministic command, external system state, second-agent review, or human judgment."
+    },
+    {
+      "id": "raw-3a3bb1482207",
+      "title": "Stop rules conflict with platform-specific goal behavior and are too easy to apply prematurely",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 58
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 152
+        }
+      ],
+      "evidence_summary": "The skill says stop when “a blocker repeats” and later “Stop after the same blocker appears twice.” Current Codex goal handling is stricter for marking a goal blocked: a repeated blocker must recur across at least three consecutive goal turns before setting blocked.",
+      "impact": "If this skill is used with Codex `/goal`, it can teach premature blocked termination and mismatch the actual implementation.",
+      "suggested_action": "Separate generic loop stop policy from Codex goal status policy. For Codex, explicitly defer to current goal-tool semantics; for generic loops, define “repeats” as an observed count in the contract.",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:58`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:152`\n- Evidence: The skill says stop when “a blocker repeats” and later “Stop after the same blocker appears twice.” Current Codex goal handling is stricter for marking a goal blocked: a repeated blocker must recur across at least three consecutive goal turns before setting blocked.\n- Impact: If this skill is used with Codex `/goal`, it can teach premature blocked termination and mismatch the actual implementation.\n- Suggested fix: Separate generic loop stop policy from Codex goal status policy. For Codex, explicitly defer to current goal-tool semantics; for generic loops, define “repeats” as an observed count in the contract."
+    },
+    {
+      "id": "raw-259ba1e13d5f",
+      "title": "Write-action safeguards are present but not operational enough for autonomous fix loops",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 105
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 113
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 142
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 205
+        }
+      ],
+      "evidence_summary": "The doc says keep humans at irreversible boundaries and use dry runs/read-only modes, but the PR-review example only asks to verify PR identity, sources, write permission, and runtime. It does not require clean worktree checks, branch/commit ownership, rollback plan, allowed file scope, or explicit “do not merge/send/delete” boundaries.",
+      "impact": "A repeated “review comments then fix” loop can mutate broad repo state over multiple passes without enough containment.",
+      "suggested_action": "For any loop that writes, require an action boundary: allowed paths/actions, dirty-worktree handling, rollback strategy, final human gate, and acceptance criteria for each pass.",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:105`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:113`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:142`, `/Users/bobo/.agents/skills/loop-designer/SKILL.md:205`\n- Evidence: The doc says keep humans at irreversible boundaries and use dry runs/read-only modes, but the PR-review example only asks to verify PR identity, sources, write permission, and runtime. It does not require clean worktree checks, branch/commit ownership, rollback plan, allowed file scope, or explicit “do not merge/send/delete” boundaries.\n- Impact: A repeated “review comments then fix” loop can mutate broad repo state over multiple passes without enough containment.\n- Suggested fix: For any loop that writes, require an action boundary: allowed paths/actions, dirty-worktree handling, rollback strategy, final human gate, and acceptance criteria for each pass."
+    },
+    {
+      "id": "raw-e37183b41a71",
+      "title": "Was the intended deliverable a design-only skill, or a skill that may actually start/run loops in Codex/Claude? The current text claims both",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Was the intended deliverable a design-only skill, or a skill that may actually start/run loops in Codex/Claude? The current text claims both.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_section": "## Questions",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Was the intended deliverable a design-only skill, or a skill that may actually start/run loops in Codex/Claude? The current text claims both."
+    },
+    {
+      "id": "raw-55e7d979fc8c",
+      "title": "Description promises slash commands (`/goal`, `/loop`, `/schedule`) the skill body never delivers",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` frontmatter `description",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "plus `## User-Facing Output",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The trigger line says \"set up /goal, /loop, /schedule, routines, monitors, recurring checks.\" The slash-prefixed tokens read as *custom slash commands the skill helps create*. But the body contains zero guidance on authoring slash-command files, `.claude/commands/` or Codex command definitions, or any scheduling command surface. The body's output is a Loop Contract + Execution Plan + Stop Rule — none of it produces a `/schedule` or `/loop` command.",
+      "impact": "Trigger/implementation mismatch. A user who arrives via \"/schedule\" expectation gets a conceptual loop-design doc with no command-authoring path. This is exactly the \"document matches implementation\" failure the lens targets. It also risks a stale/misleading-claim flag: these are presented as usable triggers when, in a stock Claude Code/Codex install, `/goal`/`/loop`/`/schedule` are not built-in commands.",
+      "suggested_action": "Either (a) drop the slash-command tokens from the description and keep plain words (\"set up goal, loop, or schedule routines\"), or (b) add a short section that actually explains how to ship these as custom slash commands / scheduled invocations (e.g., a command file template + a cron/CI skeleton). Don't leave the trigger promising something the skill doesn't build.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` frontmatter `description`, plus `## User-Facing Output`\n- Evidence: The trigger line says \"set up /goal, /loop, /schedule, routines, monitors, recurring checks.\" The slash-prefixed tokens read as *custom slash commands the skill helps create*. But the body contains zero guidance on authoring slash-command files, `.claude/commands/` or Codex command definitions, or any scheduling command surface. The body's output is a Loop Contract + Execution Plan + Stop Rule — none of it produces a `/schedule` or `/loop` command.\n- Impact: Trigger/implementation mismatch. A user who arrives via \"/schedule\" expectation gets a conceptual loop-design doc with no command-authoring path. This is exactly the \"document matches implementation\" failure the lens targets. It also risks a stale/misleading-claim flag: these are presented as usable triggers when, in a stock Claude Code/Codex install, `/goal`/`/loop`/`/schedule` are not built-in commands.\n- Suggested fix: Either (a) drop the slash-command tokens from the description and keep plain words (\"set up goal, loop, or schedule routines\"), or (b) add a short section that actually explains how to ship these as custom slash commands / scheduled invocations (e.g., a command file template + a cron/CI skeleton). Don't leave the trigger promising something the skill doesn't build."
+    },
+    {
+      "id": "raw-9695e441854b",
+      "title": "Cost/safety boundaries are presented as enforceable controls, but a skill is an advisory context doc with no enforcement harness",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `## Cost And Safety Boundaries",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## Execution Cycle",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## User-Facing Output",
+          "line": null
+        }
+      ],
+      "evidence_summary": "\"Every non-trivial loop needs at least one boundary: Max attempts. Max wall-clock duration. Max token budget. … Read-only mode until diagnosis is complete. Dry run before write actions. Stop after the same blocker appears twice.\" The body then instructs: \"return the contract first, then run the loop.\"",
+      "impact": "A skill loaded into a single chat turn cannot reliably enforce wall-clock duration, token budget, or attempt caps — the model cannot accurately observe its own elapsed time or token spend mid-turn, and nothing in the skill wires these to a real harness. Listing them as flat \"boundaries\" overstates what the skill controls and can mislead a reader into trusting hard limits that are actually agent self-discipline (best-effort). This is a missing-safeguard / misleading-claim issue.",
+      "suggested_action": "Split boundaries into (1) *agent-discipline checks* the model honors in-turn (max attempts, \"stop after same blocker twice\", dry-run-then-write, read-only-until-diagnosed) and (2) *harness-enforced controls* that require an external runner (wall-clock, token budget, scheduled cadence) — and explicitly say the skill can only enforce group 1, and that group 2 needs an external scheduler/wrapper. That removes the unverifiable-claim smell.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` → `## Cost And Safety Boundaries`, `## Execution Cycle`, `## User-Facing Output`\n- Evidence: \"Every non-trivial loop needs at least one boundary: Max attempts. Max wall-clock duration. Max token budget. … Read-only mode until diagnosis is complete. Dry run before write actions. Stop after the same blocker appears twice.\" The body then instructs: \"return the contract first, then run the loop.\"\n- Impact: A skill loaded into a single chat turn cannot reliably enforce wall-clock duration, token budget, or attempt caps — the model cannot accurately observe its own elapsed time or token spend mid-turn, and nothing in the skill wires these to a real harness. Listing them as flat \"boundaries\" overstates what the skill controls and can mislead a reader into trusting hard limits that are actually agent self-discipline (best-effort). This is a missing-safeguard / misleading-claim issue.\n- Suggested fix: Split boundaries into (1) *agent-discipline checks* the model honors in-turn (max attempts, \"stop after same blocker twice\", dry-run-then-write, read-only-until-diagnosed) and (2) *harness-enforced controls* that require an external runner (wall-clock, token budget, scheduled cadence) — and explicitly say the skill can only enforce group 1, and that group 2 needs an external scheduler/wrapper. That removes the unverifiable-claim smell."
+    },
+    {
+      "id": "raw-09be63293dc0",
+      "title": "Time-based and proactive loops are described but no runner is named — the \"how does this actually execute\" prerequisite is missing",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `### 3. Time-Based Loop",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "### 4. Proactive Loop",
+          "line": null
+        }
+      ],
+      "evidence_summary": "§3 lists \"Trigger: interval or schedule\"; §4 lists \"Trigger: event, queue, webhook, routine, or scheduled scan\" and concedes \"Proactive loops need more infrastructure\" — but names no concrete mechanism anywhere (no cron, no GitHub Action, no daemon, no Claude background task/agent, no webhook receiver). The closest existing sentence (\"The system opens or updates the output artifact\") treats \"the system\" as a black box.",
+      "impact": "Operational usefulness gap and a likely stale/misleading claim. A reader can design a loop contract but has no path to *run* §3/§4. The source article (\"Getting started with loops\") presumably described a concrete orchestration; abstracting it away loses the operative half. The description's \"Design **and run** practical AI agent loops\" is only honestly true for turn-based and bounded goal-based loops.",
+      "suggested_action": "Add a short \"Runner / prerequisites\" note: state explicitly that §1–§2 execute inside a single Claude Code/Codex turn, while §3–§4 require an external scheduler (give 1–2 concrete examples, e.g., cron + CLI, GitHub Actions, a webhook handler) and that the skill's job for those is to *specify* the loop, not host it. This also fixes the over-broad \"run\" claim.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` → `### 3. Time-Based Loop`, `### 4. Proactive Loop`\n- Evidence: §3 lists \"Trigger: interval or schedule\"; §4 lists \"Trigger: event, queue, webhook, routine, or scheduled scan\" and concedes \"Proactive loops need more infrastructure\" — but names no concrete mechanism anywhere (no cron, no GitHub Action, no daemon, no Claude background task/agent, no webhook receiver). The closest existing sentence (\"The system opens or updates the output artifact\") treats \"the system\" as a black box.\n- Impact: Operational usefulness gap and a likely stale/misleading claim. A reader can design a loop contract but has no path to *run* §3/§4. The source article (\"Getting started with loops\") presumably described a concrete orchestration; abstracting it away loses the operative half. The description's \"Design **and run** practical AI agent loops\" is only honestly true for turn-based and bounded goal-based loops.\n- Suggested fix: Add a short \"Runner / prerequisites\" note: state explicitly that §1–§2 execute inside a single Claude Code/Codex turn, while §3–§4 require an external scheduler (give 1–2 concrete examples, e.g., cron + CLI, GitHub Actions, a webhook handler) and that the skill's job for those is to *specify* the loop, not host it. This also fixes the over-broad \"run\" claim."
+    },
+    {
+      "id": "raw-20ca511d5b0e",
+      "title": "Source attribution is unverifiable; primary-source link missing",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → intro paragraph",
+          "line": null
+        }
+      ],
+      "evidence_summary": "\"This skill is based on the loop model from 'Getting started with loops': …\" — no URL, author, or date.",
+      "impact": "Documentation completeness + unverifiable claim. The title is generic enough to be ambiguous, and reviewers/readers can't verify the skill faithfully represents the source (the task itself notes the source was a WeChat *translation*, raising paraphrase-risk). For a skill that proposes verifiable signals elsewhere, leaving its own provenance unverifiable is inconsistent.",
+      "suggested_action": "Add a one-line citation with URL and access date, and note it is a translated/secondary source so readers know to confirm against the primary.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` → intro paragraph\n- Evidence: \"This skill is based on the loop model from 'Getting started with loops': …\" — no URL, author, or date.\n- Impact: Documentation completeness + unverifiable claim. The title is generic enough to be ambiguous, and reviewers/readers can't verify the skill faithfully represents the source (the task itself notes the source was a WeChat *translation*, raising paraphrase-risk). For a skill that proposes verifiable signals elsewhere, leaving its own provenance unverifiable is inconsistent.\n- Suggested fix: Add a one-line citation with URL and access date, and note it is a translated/secondary source so readers know to confirm against the primary."
+    },
+    {
+      "id": "raw-fa11f4ca4137",
+      "title": "Proactive role separation is a pipeline but rendered as a flat list; the article's diagrams are absent",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `### 4. Proactive Loop` (\"A strong proactive loop separates roles:\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The five roles (Trigger → Main agent → artifact update → Second-agent review → Human decision) are a sequential flow with feedback, but presented as bullet prose. The task explicitly notes the source article included diagrams for \"proactive loop roles\" and the \"goal evaluator loop.\"",
+      "impact": "Ambiguity about ordering and feedback edges (does the reviewer feed back to the main agent, or only to the human? does the human re-trigger?). Re-adding a small ASCII diagram for the evaluator loop (work → verify → pass/fail → retry) and the proactive pipeline would remove that ambiguity and better preserve the source's value.",
+      "suggested_action": "Add two compact ASCII diagrams (goal-evaluator loop; proactive role pipeline with the human-at-irreversible-boundary gate). Keep them tiny; prose can stay.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` → `### 4. Proactive Loop` (\"A strong proactive loop separates roles:\")\n- Evidence: The five roles (Trigger → Main agent → artifact update → Second-agent review → Human decision) are a sequential flow with feedback, but presented as bullet prose. The task explicitly notes the source article included diagrams for \"proactive loop roles\" and the \"goal evaluator loop.\"\n- Impact: Ambiguity about ordering and feedback edges (does the reviewer feed back to the main agent, or only to the human? does the human re-trigger?). Re-adding a small ASCII diagram for the evaluator loop (work → verify → pass/fail → retry) and the proactive pipeline would remove that ambiguity and better preserve the source's value.\n- Suggested fix: Add two compact ASCII diagrams (goal-evaluator loop; proactive role pipeline with the human-at-irreversible-boundary gate). Keep them tiny; prose can stay."
+    },
+    {
+      "id": "raw-ce872bd5e87b",
+      "title": "\"5 attempts\" / \"5 tries\" in goal examples look like a norm, not an illustration",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `### 2. Goal-Based Loop",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "\"Good goal examples\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Two of three examples fix attempts at 5 (\"Stop after 5 attempts\", \"Stop after 5 tries\").",
+      "impact": "Minor — readers may anchor on 5 as a recommended default. Not wrong, but the doc elsewhere correctly says \"cap attempts\" without prescribing a number; the examples undercut that by repeating one value.",
+      "suggested_action": "Vary the numbers across examples (e.g., 3, 5, 8) and add a parenthetical that the cap is task-specific.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` → `### 2. Goal-Based Loop`, \"Good goal examples\"\n- Evidence: Two of three examples fix attempts at 5 (\"Stop after 5 attempts\", \"Stop after 5 tries\").\n- Impact: Minor — readers may anchor on 5 as a recommended default. Not wrong, but the doc elsewhere correctly says \"cap attempts\" without prescribing a number; the examples undercut that by repeating one value.\n- Suggested fix: Vary the numbers across examples (e.g., 3, 5, 8) and add a parenthetical that the cap is task-specific."
+    },
+    {
+      "id": "raw-b2ecc8502a81",
+      "title": "For the `/goal`/`/loop`/`/schedule` triggers: are these meant to be (a) custom commands the skill *helps the user create*, or (b) commands t",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "For the `/goal`/`/loop`/`/schedule` triggers: are these meant to be (a) custom commands the skill *helps the user create*, or (b) commands the skill expects to *be invoked by*? The answer determines whether P1 #1 is \"drop the tokens\" or \"add command-authoring guidance\" — I couldn't verify against sibling skills whether a command-authoring convention exists here.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Questions",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "For the `/goal`/`/loop`/`/schedule` triggers: are these meant to be (a) custom commands the skill *helps the user create*, or (b) commands the skill expects to *be invoked by*? The answer determines whether P1 #1 is \"drop the tokens\" or \"add command-authoring guidance\" — I couldn't verify against sibling skills whether a command-authoring convention exists here."
+    },
+    {
+      "id": "raw-daa6be970001",
+      "title": "For §3/§4: is there an intended runner in this environment (a scheduler skill, a Claude background-task feature, an external cron) that the",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "For §3/§4: is there an intended runner in this environment (a scheduler skill, a Claude background-task feature, an external cron) that the skill should point to? Without that I can't confirm whether the \"run\" claim is salvageable as-is or must be scoped down.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_section": "## Questions",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "For §3/§4: is there an intended runner in this environment (a scheduler skill, a Claude background-task feature, an external cron) that the skill should point to? Without that I can't confirm whether the \"run\" claim is salvageable as-is or must be scoped down."
+    },
+    {
+      "id": "raw-e735ea884fb4",
+      "title": "P1 recurring/proactive loops are still presented as runnable without a capability gate. `SKILL.md:3`, `78-99`, and `201` say “Design and run",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 3
+        }
+      ],
+      "evidence_summary": "P1 recurring/proactive loops are still presented as runnable without a capability gate. `SKILL.md:3`, `78-99`, and `201` say “Design and run”, interval/schedule/event triggers, then “run the loop”; the doc still does not require a runner, persistence, logs, cancel path, or proof the current environment can keep executing.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "P1 recurring/proactive loops are still presented as runnable without a capability gate. `SKILL.md:3`, `78-99`, and `201` say “Design and run”, interval/schedule/event triggers, then “run the loop”; the doc still does not require a runner, persistence, logs, cancel path, or proof the current environment can keep executing."
+    },
+    {
+      "id": "raw-53c991615654",
+      "title": "P1 goal evaluator is still under-specified. `SKILL.md:22-34` has only `Verification signal`; `56-60` mentions an evaluator but does not requ",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 22
+        }
+      ],
+      "evidence_summary": "P1 goal evaluator is still under-specified. `SKILL.md:22-34` has only `Verification signal`; `56-60` mentions an evaluator but does not require source of truth, evaluator type, or pass/fail authority.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "P1 goal evaluator is still under-specified. `SKILL.md:22-34` has only `Verification signal`; `56-60` mentions an evaluator but does not require source of truth, evaluator type, or pass/fail authority."
+    },
+    {
+      "id": "raw-bb6467bb0fb5",
+      "title": "P2 Codex-specific stop semantics still conflict. `SKILL.md:58` and `152` allow stopping when a blocker repeats / after twice; current Codex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 58
+        }
+      ],
+      "evidence_summary": "P2 Codex-specific stop semantics still conflict. `SKILL.md:58` and `152` allow stopping when a blocker repeats / after twice; current Codex goal handling requires stricter blocked semantics, so this should be platform-scoped.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "P2 Codex-specific stop semantics still conflict. `SKILL.md:58` and `152` allow stopping when a blocker repeats / after twice; current Codex goal handling requires stricter blocked semantics, so this should be platform-scoped."
+    },
+    {
+      "id": "raw-ae0e2e7c0bd9",
+      "title": "P2 write-action safeguards still need operational boundaries. `SKILL.md:105-113`, `142-154`, and `205-211` mention human gates/dry runs, but",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 105
+        }
+      ],
+      "evidence_summary": "P2 write-action safeguards still need operational boundaries. `SKILL.md:105-113`, `142-154`, and `205-211` mention human gates/dry runs, but the PR review loop example still lacks allowed paths/actions, dirty-worktree handling, rollback, and final non-merge/send/delete boundaries.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "P2 write-action safeguards still need operational boundaries. `SKILL.md:105-113`, `142-154`, and `205-211` mention human gates/dry runs, but the PR review loop example still lacks allowed paths/actions, dirty-worktree handling, rollback, and final non-merge/send/delete boundaries."
+    },
+    {
+      "id": "raw-eef4b7c0cf2a",
+      "title": "None. I would soften my prior “current Codex tool surface” wording: the problem is not only Codex capability, but the skill’s failure to dis",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "None. I would soften my prior “current Codex tool surface” wording: the problem is not only Codex capability, but the skill’s failure to distinguish in-turn execution, local runner execution, cloud/scheduled execution, and design-only output.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Retracted Own Findings",
+      "peer_status": "retracted",
+      "confidence": "medium",
+      "raw_text": "None. I would soften my prior “current Codex tool surface” wording: the problem is not only Codex capability, but the skill’s failure to distinguish in-turn execution, local runner execution, cloud/scheduled execution, and design-only output."
+    },
+    {
+      "id": "raw-305269141147",
+      "title": "The slash-command mismatch is supported in a narrowed form. `SKILL.md:3` says “set up /goal, /loop, /schedule”, but the body never states wh",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 3
+        }
+      ],
+      "evidence_summary": "The slash-command mismatch is supported in a narrowed form. `SKILL.md:3` says “set up /goal, /loop, /schedule”, but the body never states whether these are literal Claude Code commands, Codex concepts, trigger phrases, or commands to create.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "The slash-command mismatch is supported in a narrowed form. `SKILL.md:3` says “set up /goal, /loop, /schedule”, but the body never states whether these are literal Claude Code commands, Codex concepts, trigger phrases, or commands to create."
+    },
+    {
+      "id": "raw-c94cc77323f2",
+      "title": "The cost/safety boundary concern is supported. `SKILL.md:146-152` lists wall-clock duration and token budget beside agent-discipline checks,",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 146
+        }
+      ],
+      "evidence_summary": "The cost/safety boundary concern is supported. `SKILL.md:146-152` lists wall-clock duration and token budget beside agent-discipline checks, but the skill has no harness section explaining which limits are best-effort versus externally enforced.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "The cost/safety boundary concern is supported. `SKILL.md:146-152` lists wall-clock duration and token budget beside agent-discipline checks, but the skill has no harness section explaining which limits are best-effort versus externally enforced."
+    },
+    {
+      "id": "raw-d195968a9185",
+      "title": "The missing runner prerequisite is supported. `SKILL.md:78-103` describes time-based and proactive loops, but no cron, CLI, daemon, cloud ro",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 78
+        }
+      ],
+      "evidence_summary": "The missing runner prerequisite is supported. `SKILL.md:78-103` describes time-based and proactive loops, but no cron, CLI, daemon, cloud routine, webhook receiver, or scheduler substrate is named.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "The missing runner prerequisite is supported. `SKILL.md:78-103` describes time-based and proactive loops, but no cron, CLI, daemon, cloud routine, webhook receiver, or scheduler substrate is named."
+    },
+    {
+      "id": "raw-7953e81ecc85",
+      "title": "Source attribution is missing. `SKILL.md:10` cites only `\"Getting started with loops\"` with no URL, author, date, primary-vs-translation not",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 10
+        }
+      ],
+      "evidence_summary": "Source attribution is missing. `SKILL.md:10` cites only `\"Getting started with loops\"` with no URL, author, date, primary-vs-translation note, or access date.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "Source attribution is missing. `SKILL.md:10` cites only `\"Getting started with loops\"` with no URL, author, date, primary-vs-translation note, or access date."
+    },
+    {
+      "id": "raw-e595a662c207",
+      "title": "Examples do not demonstrate the required output contract",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 184
+        }
+      ],
+      "evidence_summary": "The “User-Facing Output” section requires `Loop Contract`, `Execution Plan`, and `Stop Rule` for design requests, and contract-first execution for execution requests. The examples at `207-226` only provide loose “Response shape” bullets and omit key contract fields like cost boundary, required tools/access, checkpoint format, failure mode, and runner.",
+      "impact": "Agents tend to copy examples. These examples teach the incomplete path for exactly the risky cases: PR-fixing loops and daily email summaries.",
+      "suggested_action": "Replace at least one example with a full minimal `Loop Contract` + `Execution Plan` + `Stop Rule`, including runner/cancel/logging for time-based loops and action boundaries for write loops.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:184`\n- Evidence: The “User-Facing Output” section requires `Loop Contract`, `Execution Plan`, and `Stop Rule` for design requests, and contract-first execution for execution requests. The examples at `207-226` only provide loose “Response shape” bullets and omit key contract fields like cost boundary, required tools/access, checkpoint format, failure mode, and runner.\n- Impact: Agents tend to copy examples. These examples teach the incomplete path for exactly the risky cases: PR-fixing loops and daily email summaries.\n- Suggested fix: Replace at least one example with a full minimal `Loop Contract` + `Execution Plan` + `Stop Rule`, including runner/cancel/logging for time-based loops and action boundaries for write loops."
+    },
+    {
+      "id": "raw-a34ec3e5384a",
+      "title": "Trigger description is overloaded and likely to overtrigger",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 3
+        }
+      ],
+      "evidence_summary": "The description mixes broad triggers (`automate repeated agent work`, `autonomous workflows`) with literal-looking command names (`/goal`, `/loop`, `/schedule`) and concrete task classes (`routines`, `monitors`, `recurring checks`).",
+      "impact": "It can steal ordinary debugging, testing, or workflow tasks that only need a normal turn or another focused skill. It also obscures the key distinction between “design a loop” and “run a loop”.",
+      "suggested_action": "Split the description into fewer branches: design a bounded agent loop; execute a bounded in-turn/goal loop; plan scheduled/proactive loops only when a runner exists or must be specified.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `/Users/bobo/.agents/skills/loop-designer/SKILL.md:3`\n- Evidence: The description mixes broad triggers (`automate repeated agent work`, `autonomous workflows`) with literal-looking command names (`/goal`, `/loop`, `/schedule`) and concrete task classes (`routines`, `monitors`, `recurring checks`).\n- Impact: It can steal ordinary debugging, testing, or workflow tasks that only need a normal turn or another focused skill. It also obscures the key distinction between “design a loop” and “run a loop”.\n- Suggested fix: Split the description into fewer branches: design a bounded agent loop; execute a bounded in-turn/goal loop; plan scheduled/proactive loops only when a runner exists or must be specified."
+    },
+    {
+      "id": "raw-7d15461ea0d4",
+      "title": "I reject the claim that `/goal`, `/loop`, and `/schedule` necessarily “read as custom slash commands the skill helps create.” They may also",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "I reject the claim that `/goal`, `/loop`, and `/schedule` necessarily “read as custom slash commands the skill helps create.” They may also be intended as Claude Code command names or trigger phrases. The concrete issue is ambiguity and missing platform/runner mapping, not necessarily missing command-file authoring guidance.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Rejected Peer Findings",
+      "peer_status": "rejected",
+      "confidence": "medium",
+      "raw_text": "I reject the claim that `/goal`, `/loop`, and `/schedule` necessarily “read as custom slash commands the skill helps create.” They may also be intended as Claude Code command names or trigger phrases. The concrete issue is ambiguity and missing platform/runner mapping, not necessarily missing command-file authoring guidance."
+    },
+    {
+      "id": "raw-ede6ba710e73",
+      "title": "I reject “the article’s diagrams are absent” as a required P2 by itself. A diagram would help, but the defect is ambiguous execution/evaluat",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "I reject “the article’s diagrams are absent” as a required P2 by itself. A diagram would help, but the defect is ambiguous execution/evaluator flow; prose or a table could fix it just as well.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Rejected Peer Findings",
+      "peer_status": "rejected",
+      "confidence": "medium",
+      "raw_text": "I reject “the article’s diagrams are absent” as a required P2 by itself. A diagram would help, but the defect is ambiguous execution/evaluator flow; prose or a table could fix it just as well."
+    },
+    {
+      "id": "raw-3fff14bad264",
+      "title": "I reject the “5 attempts looks like a norm” item as review-blocking. `SKILL.md:64-67` uses examples; varying numbers would be nicer, but thi",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 64
+        }
+      ],
+      "evidence_summary": "I reject the “5 attempts looks like a norm” item as review-blocking. `SKILL.md:64-67` uses examples; varying numbers would be nicer, but this is not a correctness or operational-usefulness issue on its own.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Rejected Peer Findings",
+      "peer_status": "rejected",
+      "confidence": "medium",
+      "raw_text": "I reject the “5 attempts looks like a norm” item as review-blocking. `SKILL.md:64-67` uses examples; varying numbers would be nicer, but this is not a correctness or operational-usefulness issue on its own."
+    },
+    {
+      "id": "raw-2c84f7e970c6",
+      "title": "Confirm whether this skill is meant to operate real Claude Code `/goal`, `/loop`, `/schedule` commands, Codex goal tooling, or a platform-ne",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Confirm whether this skill is meant to operate real Claude Code `/goal`, `/loop`, `/schedule` commands, Codex goal tooling, or a platform-neutral loop-design checklist. The current document blends all three.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Confirm whether this skill is meant to operate real Claude Code `/goal`, `/loop`, `/schedule` commands, Codex goal tooling, or a platform-neutral loop-design checklist. The current document blends all three."
+    },
+    {
+      "id": "raw-5306d20eae7b",
+      "title": "Confirm whether the WeChat translation is the desired citation source, or whether the skill should cite the original article directly and ma",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Confirm whether the WeChat translation is the desired citation source, or whether the skill should cite the original article directly and mark translated claims separately.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Confirm whether the WeChat translation is the desired citation source, or whether the skill should cite the original article directly and mark translated claims separately."
+    },
+    {
+      "id": "raw-777657ed8738",
+      "title": "Confirm whether proactive loops are intended to actually run in this local agent environment, or only produce implementation plans for an ex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Confirm whether proactive loops are intended to actually run in this local agent environment, or only produce implementation plans for an external scheduler/runner.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "Confirm whether proactive loops are intended to actually run in this local agent environment, or only produce implementation plans for an external scheduler/runner."
+    },
+    {
+      "id": "raw-d87b51194db6",
+      "title": "**P1 — Description promises `/goal`/`/loop`/`/schedule` the skill body never delivers.** The body produces a Loop Contract + Execution Plan",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "writing-great-skills/SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "**P1 — Description promises `/goal`/`/loop`/`/schedule` the skill body never delivers.** The body produces a Loop Contract + Execution Plan + Stop Rule; it contains no guidance for authoring custom slash commands or `.claude/commands/` / Codex command files, and no scheduling surface. In a stock Claude Code/Codex install those slash tokens are not built-in commands, so the trigger reads as a deliverable the skill doesn't produce. (Confirmed against `writing-great-skills/SKILL.md`: skills here ar",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**P1 — Description promises `/goal`/`/loop`/`/schedule` the skill body never delivers.** The body produces a Loop Contract + Execution Plan + Stop Rule; it contains no guidance for authoring custom slash commands or `.claude/commands/` / Codex command files, and no scheduling surface. In a stock Claude Code/Codex install those slash tokens are not built-in commands, so the trigger reads as a deliverable the skill doesn't produce. (Confirmed against `writing-great-skills/SKILL.md`: skills here are advisory context docs, not command emitters, and nothing in the skill authoring guidance implies the skill ships commands.)"
+    },
+    {
+      "id": "raw-e769a42a7703",
+      "title": "**P1 — Cost/safety boundaries presented as enforceable, but a skill is advisory.** \"Max wall-clock duration,\" \"Max token budget,\" etc. are l",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P1 — Cost/safety boundaries presented as enforceable, but a skill is advisory.** \"Max wall-clock duration,\" \"Max token budget,\" etc. are listed flat as controls the loop will have, then the skill says \"run the loop.\" A single-turn skill cannot reliably enforce wall-clock or token caps without an external harness.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**P1 — Cost/safety boundaries presented as enforceable, but a skill is advisory.** \"Max wall-clock duration,\" \"Max token budget,\" etc. are listed flat as controls the loop will have, then the skill says \"run the loop.\" A single-turn skill cannot reliably enforce wall-clock or token caps without an external harness."
+    },
+    {
+      "id": "raw-c07e4c78d653",
+      "title": "**P1 — Time-based + proactive loops are described but no runner is named; \"Design and run\" is only honest for §1–§2.** §3/§4 concede \"need m",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "writing-great-skills/SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "**P1 — Time-based + proactive loops are described but no runner is named; \"Design and run\" is only honest for §1–§2.** §3/§4 concede \"need more infrastructure\" but name no concrete mechanism (cron, GitHub Action, webhook receiver, background task). Nothing in `writing-great-skills/SKILL.md` supplies a runner convention either, so this gap is not covered elsewhere.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**P1 — Time-based + proactive loops are described but no runner is named; \"Design and run\" is only honest for §1–§2.** §3/§4 concede \"need more infrastructure\" but name no concrete mechanism (cron, GitHub Action, webhook receiver, background task). Nothing in `writing-great-skills/SKILL.md` supplies a runner convention either, so this gap is not covered elsewhere."
+    },
+    {
+      "id": "raw-3903c224b08f",
+      "title": "**P2 — Source attribution unverifiable; no primary-source link.**",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Source attribution unverifiable; no primary-source link.**",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**P2 — Source attribution unverifiable; no primary-source link.**"
+    },
+    {
+      "id": "raw-151cdb031775",
+      "title": "**P2 — Proactive role separation / goal-evaluator flow rendered as flat prose; article diagrams absent.**",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Proactive role separation / goal-evaluator flow rendered as flat prose; article diagrams absent.**",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**P2 — Proactive role separation / goal-evaluator flow rendered as flat prose; article diagrams absent.**"
+    },
+    {
+      "id": "raw-0e8263ff9802",
+      "title": "**P2 — Two of three goal examples fix attempts at \"5,\" reading like a norm.**",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Two of three goal examples fix attempts at \"5,\" reading like a norm.**",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Still Standing Own Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "**P2 — Two of three goal examples fix attempts at \"5,\" reading like a norm.**"
+    },
+    {
+      "id": "raw-ba26e7a42893",
+      "title": "None fully retracted, but I revise the framing on the boundary finding: my prior review implied the skill *overrides* enforcement responsibi",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "None fully retracted, but I revise the framing on the boundary finding: my prior review implied the skill *overrides* enforcement responsibility. The cleaner statement (and the one that matters for a doc review) is a **clarity-of-claim** problem — the doc does not distinguish \"agent-discipline checks\" from \"harness-enforced controls,\" so a reader cannot tell which guarantees they actually have. I'll keep it P1 on that sharper basis.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Retracted Own Findings",
+      "peer_status": "retracted",
+      "confidence": "medium",
+      "raw_text": "None fully retracted, but I revise the framing on the boundary finding: my prior review implied the skill *overrides* enforcement responsibility. The cleaner statement (and the one that matters for a doc review) is a **clarity-of-claim** problem — the doc does not distinguish \"agent-discipline checks\" from \"harness-enforced controls,\" so a reader cannot tell which guarantees they actually have. I'll keep it P1 on that sharper basis."
+    },
+    {
+      "id": "raw-02733f0a3ed5",
+      "title": "**P1 — Recurring/proactive loops presented as executable without a capability gate.** This overlaps my P1; the peer's \"Operational Capabilit",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P1 — Recurring/proactive loops presented as executable without a capability gate.** This overlaps my P1; the peer's \"Operational Capability Gate\" framing (identify runtime substrate, credentials, persistence, logging, cancel path, write perms) is concretely useful and adds real value beyond mine. Supported by the supplied body text: description claims \"run\"; §3/§4 cite intervals/webhooks/scheduled scans with no mechanism; `## User-Facing Output` instructs \"return the contract first, then run t",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "**P1 — Recurring/proactive loops presented as executable without a capability gate.** This overlaps my P1; the peer's \"Operational Capability Gate\" framing (identify runtime substrate, credentials, persistence, logging, cancel path, write perms) is concretely useful and adds real value beyond mine. Supported by the supplied body text: description claims \"run\"; §3/§4 cite intervals/webhooks/scheduled scans with no mechanism; `## User-Facing Output` instructs \"return the contract first, then run the loop.\""
+    },
+    {
+      "id": "raw-3d6518039351",
+      "title": "**P1 — Goal-evaluator under-specified; contract has \"Verification signal\" but no evaluator/pass-fail authority.** Supported by the contract",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P1 — Goal-evaluator under-specified; contract has \"Verification signal\" but no evaluator/pass-fail authority.** Supported by the contract template (only `Verification signal`) and §2's \"an evaluator checks the condition\" with no schema for who/what evaluates. The suggested fields (`Source of truth`, `Evaluator`, `Pass/fail authority` with deterministic/external/second-agent/human classification) are a concrete improvement and dovetail with the skill's own (good) \"don't pretend subjective revie",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "**P1 — Goal-evaluator under-specified; contract has \"Verification signal\" but no evaluator/pass-fail authority.** Supported by the contract template (only `Verification signal`) and §2's \"an evaluator checks the condition\" with no schema for who/what evaluates. The suggested fields (`Source of truth`, `Evaluator`, `Pass/fail authority` with deterministic/external/second-agent/human classification) are a concrete improvement and dovetail with the skill's own (good) \"don't pretend subjective review is automated\" rule."
+    },
+    {
+      "id": "raw-1d14ec89ab1b",
+      "title": "**P2 — Write-action safeguards not operational enough for autonomous fix loops; PR-review example lacks path scope, dirty-worktree handling,",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Write-action safeguards not operational enough for autonomous fix loops; PR-review example lacks path scope, dirty-worktree handling, rollback, per-pass acceptance.** Supported by the supplied example at the Examples section (\"每 10 分钟看一下 PR review\"), which verifies identity/sources/CI/write-permission/runtime but no containment. Reasonable and file-grounded.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Confirmed Peer Findings",
+      "peer_status": "confirmed",
+      "confidence": "high",
+      "raw_text": "**P2 — Write-action safeguards not operational enough for autonomous fix loops; PR-review example lacks path scope, dirty-worktree handling, rollback, per-pass acceptance.** Supported by the supplied example at the Examples section (\"每 10 分钟看一下 PR review\"), which verifies identity/sources/CI/write-permission/runtime but no containment. Reasonable and file-grounded."
+    },
+    {
+      "id": "raw-6b534fc2a0a8",
+      "title": "\"Design and run\" deliverable is genuinely ambiguous — the doc claims both modes but only one executes in-turn",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` frontmatter `description` (\"Design",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "run practical AI agent loops\")",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## User-Facing Output` (\"For loop execution requests",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "return the contract first",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "then run the loop\").",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The doc defines two output modes (design vs. execution) but never states which loop types can actually be *executed* inside a Claude Code/Codex turn vs. only *designed*. §1 turn-based and bounded §2 goal-based can run in-turn; §3/§4 cannot without an external runner. This is the convergence point of three of the above findings.",
+      "impact": "A reader following the skill in a single chat session may believe a scheduled/proactive loop is \"running\" when only a design was produced — a stale/misleading-claim and missing-safeguard risk.",
+      "suggested_action": "Add a one-line capability note up front (e.g., \"§1–§2 run inside a single agent turn; §3–§4 require an external scheduler — the skill specifies them, it does not host them\"). This single edit resolves the overlap between my P1 #3 and the peer's P1 capability-gate finding and scopes the word \"run\" honestly.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` frontmatter `description` (\"Design and run practical AI agent loops\") and `## User-Facing Output` (\"For loop execution requests, return the contract first, then run the loop\").\n- Evidence: The doc defines two output modes (design vs. execution) but never states which loop types can actually be *executed* inside a Claude Code/Codex turn vs. only *designed*. §1 turn-based and bounded §2 goal-based can run in-turn; §3/§4 cannot without an external runner. This is the convergence point of three of the above findings.\n- Impact: A reader following the skill in a single chat session may believe a scheduled/proactive loop is \"running\" when only a design was produced — a stale/misleading-claim and missing-safeguard risk.\n- Suggested fix: Add a one-line capability note up front (e.g., \"§1–§2 run inside a single agent turn; §3–§4 require an external scheduler — the skill specifies them, it does not host them\"). This single edit resolves the overlap between my P1 #3 and the peer's P1 capability-gate finding and scopes the word \"run\" honestly."
+    },
+    {
+      "id": "raw-ac8527a05472",
+      "title": "Trigger overlap with `diagnosing-bugs` — \"automate repeated agent work\" is broad enough to capture ordinary debug-fix cycles",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` frontmatter `description` (\"automate repeated agent work",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "… autonomous workflows\")",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "cross-checked against `/Users/bobo/.agents/skills/diagnosing-bugs/SKILL.md`.",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`diagnosing-bugs` already owns the investigate→hypothesize→fix→verify feedback loop territory. The loop-designer trigger's \"automate repeated agent work\" with no qualifier can route ordinary debugging into loop-designer, where it would be over-built into a \"loop.\"",
+      "impact": "Trigger-quality / routing ambiguity; mild scope creep between sibling skills.",
+      "suggested_action": "Narrow the trigger to *loop-shaped* repeated work — e.g., \"turn a repeated, checkable workflow into a bounded loop\" and/or \"set up scheduled or goal-iterated agent routines\" — and explicitly defer one-off debugging to `diagnosing-bugs`. (This confirms the peer's non-blocking note and grounds it in the sibling file.)",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` frontmatter `description` (\"automate repeated agent work, … autonomous workflows\"), cross-checked against `/Users/bobo/.agents/skills/diagnosing-bugs/SKILL.md`.\n- Evidence: `diagnosing-bugs` already owns the investigate→hypothesize→fix→verify feedback loop territory. The loop-designer trigger's \"automate repeated agent work\" with no qualifier can route ordinary debugging into loop-designer, where it would be over-built into a \"loop.\"\n- Impact: Trigger-quality / routing ambiguity; mild scope creep between sibling skills.\n- Suggested fix: Narrow the trigger to *loop-shaped* repeated work — e.g., \"turn a repeated, checkable workflow into a bounded loop\" and/or \"set up scheduled or goal-iterated agent routines\" — and explicitly defer one-off debugging to `diagnosing-bugs`. (This confirms the peer's non-blocking note and grounds it in the sibling file.)"
+    },
+    {
+      "id": "raw-301f25116a7e",
+      "title": "Loop Contract trims fields \"clearly irrelevant\" but gives no rule for the recursion/exit pair that most causes runaway loops",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `## Loop Contract",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## Failure Modes`.",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The contract has `Stop condition`, `Max attempts or duration`, and `Failure mode`, but no explicit field for **\"what new information must each pass produce to justify another attempt\"** — even though `## Execution Cycle` says \"do not keep retrying the same failed action without new information.\"",
+      "impact": "The single most common runaway-loop cause (no new info per pass) is named as a rule but has no contract slot, so it's easy to omit. Concrete acceptance-criteria gap.",
+      "suggested_action": "Add a contract field like `Progress signal / what-new-info-per-pass` (or fold into `Verification signal` with an explicit \"must change between attempts\" clause).",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## New Findings",
+      "peer_status": "one_sided",
+      "confidence": "medium",
+      "raw_text": "- File: `SKILL.md` → `## Loop Contract` and `## Failure Modes`.\n- Evidence: The contract has `Stop condition`, `Max attempts or duration`, and `Failure mode`, but no explicit field for **\"what new information must each pass produce to justify another attempt\"** — even though `## Execution Cycle` says \"do not keep retrying the same failed action without new information.\"\n- Impact: The single most common runaway-loop cause (no new info per pass) is named as a rule but has no contract slot, so it's easy to omit. Concrete acceptance-criteria gap.\n- Suggested fix: Add a contract field like `Progress signal / what-new-info-per-pass` (or fold into `Verification signal` with an explicit \"must change between attempts\" clause)."
+    },
+    {
+      "id": "raw-8454ca79cddb",
+      "title": "**P2 — \"Stop after the same blocker appears twice\" conflicts with a claimed Codex rule that a blocked goal requires the blocker to recur acr",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — \"Stop after the same blocker appears twice\" conflicts with a claimed Codex rule that a blocked goal requires the blocker to recur across ≥3 consecutive goal turns.** The peer states this as current Codex `goal-tool` semantics, but cites **no file** — and I could not verify it from any reachable artifact (`codex-claude-cross-review`, `find-skills`, and tree Grep were all permission-gated this pass; nothing in `writing-great-skills` or `diagnosing-bugs` describes a Codex goal-status state m",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Rejected Peer Findings",
+      "peer_status": "rejected",
+      "confidence": "medium",
+      "raw_text": "**P2 — \"Stop after the same blocker appears twice\" conflicts with a claimed Codex rule that a blocked goal requires the blocker to recur across ≥3 consecutive goal turns.** The peer states this as current Codex `goal-tool` semantics, but cites **no file** — and I could not verify it from any reachable artifact (`codex-claude-cross-review`, `find-skills`, and tree Grep were all permission-gated this pass; nothing in `writing-great-skills` or `diagnosing-bugs` describes a Codex goal-status state machine). This is a platform-runtime assertion presented as fact. If true it is worth a note, but as written it is **speculative/unverifiable from the repo** and should not be asserted as an implementation mismatch. The legitimate, file-grounded version of this finding is: the skill mixes generic loop stop-policy with platform-specific goal-status semantics and should explicitly defer to the host's goal tool rather than imply its own \"twice\" rule is authoritative. I reclassify this to Needs Human."
+    },
+    {
+      "id": "raw-d23d7efb1c86",
+      "title": "**No slash-command convention confirmed in-tree.** I could not read `find-skills` or `codex-claude-cross-review`. Author should confirm whet",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "**No slash-command convention confirmed in-tree.** I could not read `find-skills` or `codex-claude-cross-review`. Author should confirm whether `/goal`/`/loop`/`/schedule` are defined elsewhere in `.agents` (which would weaken my P1 #1) or are merely aspirational triggers (which strengthens it). If the latter, decide: drop the tokens, or add command-authoring + scheduler scaffolding.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "**No slash-command convention confirmed in-tree.** I could not read `find-skills` or `codex-claude-cross-review`. Author should confirm whether `/goal`/`/loop`/`/schedule` are defined elsewhere in `.agents` (which would weaken my P1 #1) or are merely aspirational triggers (which strengthens it). If the latter, decide: drop the tokens, or add command-authoring + scheduler scaffolding."
+    },
+    {
+      "id": "raw-ab58e1d7b663",
+      "title": "**Intended runner for §3/§4.** Is there a Claude background-task/Codex scheduler feature, a sibling scheduler skill, or an expectation that",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "**Intended runner for §3/§4.** Is there a Claude background-task/Codex scheduler feature, a sibling scheduler skill, or an expectation that the user supplies cron/CI? The doc's \"run\" claim is only salvageable if a real substrate exists; this is a product-intent question.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "**Intended runner for §3/§4.** Is there a Claude background-task/Codex scheduler feature, a sibling scheduler skill, or an expectation that the user supplies cron/CI? The doc's \"run\" claim is only salvageable if a real substrate exists; this is a product-intent question."
+    },
+    {
+      "id": "raw-ad4a74c4debc",
+      "title": "**Codex goal-status blocked threshold.** The peer's \"≥3 consecutive goal turns\" claim needs authoritative confirmation against current Codex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "**Codex goal-status blocked threshold.** The peer's \"≥3 consecutive goal turns\" claim needs authoritative confirmation against current Codex docs/runtime before it can be treated as a real mismatch.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_section": "## Needs Human",
+      "peer_status": "needs_human",
+      "confidence": "low",
+      "raw_text": "**Codex goal-status blocked threshold.** The peer's \"≥3 consecutive goal turns\" claim needs authoritative confirmation against current Codex docs/runtime before it can be treated as a real mismatch."
+    }
+  ],
+  "merged": [
+    {
+      "id": "finding-30b62853064c",
+      "dedupe_key": "file:SKILL.md` frontmatter `description` (\"Design:design run deliverable genuinely ambiguous doc claims both modes but only one ex",
+      "title": "\"Design and run\" deliverable is genuinely ambiguous — the doc claims both modes but only one executes in-turn",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` frontmatter `description` (\"Design",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "run practical AI agent loops\")",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## User-Facing Output` (\"For loop execution requests",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "return the contract first",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "then run the loop\").",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The doc defines two output modes (design vs. execution) but never states which loop types can actually be *executed* inside a Claude Code/Codex turn vs. only *designed*. §1 turn-based and bounded §2 goal-based can run in-turn; §3/§4 cannot without an external runner. This is the convergence point of three of the above findings.",
+      "impact": "A reader following the skill in a single chat session may believe a scheduled/proactive loop is \"running\" when only a design was produced — a stale/misleading-claim and missing-safeguard risk.",
+      "suggested_action": "Add a one-line capability note up front (e.g., \"§1–§2 run inside a single agent turn; §3–§4 require an external scheduler — the skill specifies them, it does not host them\"). This single edit resolves the overlap between my P1 #3 and the peer's P1 capability-gate finding and scopes the word \"run\" honestly.",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-6b534fc2a0a8"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-c2e98d5f5e60",
+      "dedupe_key": "file:SKILL.md` → `## Cost And Safety Boundaries:cost/safety boundaries presented as enforceable controls but skill advisory cont",
+      "title": "Cost/safety boundaries are presented as enforceable controls, but a skill is an advisory context doc with no enforcement harness",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `## Cost And Safety Boundaries",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## Execution Cycle",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## User-Facing Output",
+          "line": null
+        }
+      ],
+      "evidence_summary": "\"Every non-trivial loop needs at least one boundary: Max attempts. Max wall-clock duration. Max token budget. … Read-only mode until diagnosis is complete. Dry run before write actions. Stop after the same blocker appears twice.\" The body then instructs: \"return the contract first, then run the loop.\"",
+      "impact": "A skill loaded into a single chat turn cannot reliably enforce wall-clock duration, token budget, or attempt caps — the model cannot accurately observe its own elapsed time or token spend mid-turn, and nothing in the skill wires these to a real harness. Listing them as flat \"boundaries\" overstates what the skill controls and can mislead a reader into trusting hard limits that are actually agent self-discipline (best-effort). This is a missing-safeguard / misleading-claim issue.",
+      "suggested_action": "Split boundaries into (1) *agent-discipline checks* the model honors in-turn (max attempts, \"stop after same blocker twice\", dry-run-then-write, read-only-until-diagnosed) and (2) *harness-enforced controls* that require an external runner (wall-clock, token budget, scheduled cadence) — and explicitly say the skill can only enforce group 1, and that group 2 needs an external scheduler/wrapper. That removes the unverifiable-claim smell.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-9695e441854b"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-94f07af26391",
+      "dedupe_key": "file:SKILL.md` frontmatter `description:description promises slash commands /goal /loop /schedule skill body never deliv",
+      "title": "Description promises slash commands (`/goal`, `/loop`, `/schedule`) the skill body never delivers",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` frontmatter `description",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "plus `## User-Facing Output",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The trigger line says \"set up /goal, /loop, /schedule, routines, monitors, recurring checks.\" The slash-prefixed tokens read as *custom slash commands the skill helps create*. But the body contains zero guidance on authoring slash-command files, `.claude/commands/` or Codex command definitions, or any scheduling command surface. The body's output is a Loop Contract + Execution Plan + Stop Rule — none of it produces a `/schedule` or `/loop` command.",
+      "impact": "Trigger/implementation mismatch. A user who arrives via \"/schedule\" expectation gets a conceptual loop-design doc with no command-authoring path. This is exactly the \"document matches implementation\" failure the lens targets. It also risks a stale/misleading-claim flag: these are presented as usable triggers when, in a stock Claude Code/Codex install, `/goal`/`/loop`/`/schedule` are not built-in commands.",
+      "suggested_action": "Either (a) drop the slash-command tokens from the description and keep plain words (\"set up goal, loop, or schedule routines\"), or (b) add a short section that actually explains how to ship these as custom slash commands / scheduled invocations (e.g., a command file template + a cron/CI skeleton). Don't leave the trigger promising something the skill doesn't build.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-55e7d979fc8c"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-b0253b17b456",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:4:goal evaluator under-specified",
+      "title": "Goal evaluator is under-specified",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 22
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 56
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 57
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 128
+        }
+      ],
+      "evidence_summary": "The document mentions an evaluator checking the condition, but the Loop Contract has only “Verification signal,” not who or what evaluates it. There is no required source of truth, evaluator type, or pass/fail authority.",
+      "impact": "For goal loops, this weakens the central contract. The agent may treat subjective self-judgment as an objective verifier, especially for artifact quality, UI quality, summaries, reviews, or “make it better” style requests.",
+      "suggested_action": "Add contract fields like `Source of truth`, `Evaluator`, and `Pass/fail authority`. Require evaluator classification: deterministic command, external system state, second-agent review, or human judgment.",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_cards": [
+        "raw-bd1188f24b1b"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-ba3ba76ff145",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:0:recurring/proactive loops presented as executable without capability gate",
+      "title": "Recurring/proactive loops are presented as executable without a capability gate",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 3
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 78
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 94
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 201
+        }
+      ],
+      "evidence_summary": "The description says “Design and run practical AI agent loops” and includes `/schedule`, recurring monitors, and proactive workflows. The execution section says “return the contract first, then run the loop.” But the current Codex tool surface has goal-state helpers, not a durable scheduler/background worker. The examples also include “每 10 分钟看一下 PR review” and “每天早上总结我的邮件” without requiring an execution substrate.",
+      "impact": "The skill can cause an agent to imply that a scheduled/proactive loop is actually running when only a design was produced, or when persistence/logging/cancel behavior is unavailable.",
+      "suggested_action": "Add an “Operational Capability Gate” before executing time-based/proactive loops: identify runtime substrate, credentials, persistence location, logging, cancel path, write permissions, and whether this environment can actually keep running. If not, output a design plus concrete setup steps, not “run the loop.”",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_cards": [
+        "raw-13a00427d49d"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-722e66bf7611",
+      "dedupe_key": "file:SKILL.md` → `### 3. Time-Based Loop:time-based proactive loops described but no runner named how does this actually ",
+      "title": "Time-based and proactive loops are described but no runner is named — the \"how does this actually execute\" prerequisite is missing",
+      "priority": "P1",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `### 3. Time-Based Loop",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "### 4. Proactive Loop",
+          "line": null
+        }
+      ],
+      "evidence_summary": "§3 lists \"Trigger: interval or schedule\"; §4 lists \"Trigger: event, queue, webhook, routine, or scheduled scan\" and concedes \"Proactive loops need more infrastructure\" — but names no concrete mechanism anywhere (no cron, no GitHub Action, no daemon, no Claude background task/agent, no webhook receiver). The closest existing sentence (\"The system opens or updates the output artifact\") treats \"the system\" as a black box.",
+      "impact": "Operational usefulness gap and a likely stale/misleading claim. A reader can design a loop contract but has no path to *run* §3/§4. The source article (\"Getting started with loops\") presumably described a concrete orchestration; abstracting it away loses the operative half. The description's \"Design **and run** practical AI agent loops\" is only honestly true for turn-based and bounded goal-based loops.",
+      "suggested_action": "Add a short \"Runner / prerequisites\" note: state explicitly that §1–§2 execute inside a single Claude Code/Codex turn, while §3–§4 require an external scheduler (give 1–2 concrete examples, e.g., cron + CLI, GitHub Actions, a webhook handler) and that the skill's job for those is to *specify* the loop, not host it. This also fixes the over-broad \"run\" claim.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-09be63293dc0"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-297a32c41f3b",
+      "dedupe_key": "title:goal-evaluator under-specified contract has verification signal but no evaluator/pass-fail authority. supported by contr",
+      "title": "**P1 — Goal-evaluator under-specified; contract has \"Verification signal\" but no evaluator/pass-fail authority.** Supported by the contract",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P1 — Goal-evaluator under-specified; contract has \"Verification signal\" but no evaluator/pass-fail authority.** Supported by the contract template (only `Verification signal`) and §2's \"an evaluator checks the condition\" with no schema for who/what evaluates. The suggested fields (`Source of truth`, `Evaluator`, `Pass/fail authority` with deterministic/external/second-agent/human classification) are a concrete improvement and dovetail with the skill's own (good) \"don't pretend subjective revie",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-3d6518039351"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-4d07f615e37c",
+      "dedupe_key": "title:recurring/proactive loops presented as executable without capability gate. this overlaps my peer s operational capabilit",
+      "title": "**P1 — Recurring/proactive loops presented as executable without a capability gate.** This overlaps my P1; the peer's \"Operational Capabilit",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P1 — Recurring/proactive loops presented as executable without a capability gate.** This overlaps my P1; the peer's \"Operational Capability Gate\" framing (identify runtime substrate, credentials, persistence, logging, cancel path, write perms) is concretely useful and adds real value beyond mine. Supported by the supplied body text: description claims \"run\"; §3/§4 cite intervals/webhooks/scheduled scans with no mechanism; `## User-Facing Output` instructs \"return the contract first, then run t",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-02733f0a3ed5"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-eb2637e78880",
+      "dedupe_key": "title:write-action safeguards not operational enough autonomous fix loops pr-review example lacks path scope dirty-worktree ha",
+      "title": "**P2 — Write-action safeguards not operational enough for autonomous fix loops; PR-review example lacks path scope, dirty-worktree handling,",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Write-action safeguards not operational enough for autonomous fix loops; PR-review example lacks path scope, dirty-worktree handling, rollback, per-pass acceptance.** Supported by the supplied example at the Examples section (\"每 10 分钟看一下 PR review\"), which verifies identity/sources/CI/write-permission/runtime but no containment. Reasonable and file-grounded.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-1d14ec89ab1b"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-a709ec8d015d",
+      "dedupe_key": "title:source attribution missing. skill.md 10 cites only getting started loops no url author date primary-vs-translation not",
+      "title": "Source attribution is missing. `SKILL.md:10` cites only `\"Getting started with loops\"` with no URL, author, date, primary-vs-translation not",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 10
+        }
+      ],
+      "evidence_summary": "Source attribution is missing. `SKILL.md:10` cites only `\"Getting started with loops\"` with no URL, author, date, primary-vs-translation note, or access date.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-7953e81ecc85"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-cd41b5f77021",
+      "dedupe_key": "title:cost/safety boundary concern supported. skill.md 146-152 lists wall-clock duration token budget beside agent-discipline ",
+      "title": "The cost/safety boundary concern is supported. `SKILL.md:146-152` lists wall-clock duration and token budget beside agent-discipline checks,",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 146
+        }
+      ],
+      "evidence_summary": "The cost/safety boundary concern is supported. `SKILL.md:146-152` lists wall-clock duration and token budget beside agent-discipline checks, but the skill has no harness section explaining which limits are best-effort versus externally enforced.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-c94cc77323f2"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-41536f14d7f4",
+      "dedupe_key": "title:missing runner prerequisite supported. skill.md 78-103 describes time-based proactive loops but no cron cli daemon cloud",
+      "title": "The missing runner prerequisite is supported. `SKILL.md:78-103` describes time-based and proactive loops, but no cron, CLI, daemon, cloud ro",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 78
+        }
+      ],
+      "evidence_summary": "The missing runner prerequisite is supported. `SKILL.md:78-103` describes time-based and proactive loops, but no cron, CLI, daemon, cloud routine, webhook receiver, or scheduler substrate is named.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-d195968a9185"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-e49737ed0495",
+      "dedupe_key": "title:slash-command mismatch supported narrowed form. skill.md 3 says set up /goal /loop /schedule but body never states wh",
+      "title": "The slash-command mismatch is supported in a narrowed form. `SKILL.md:3` says “set up /goal, /loop, /schedule”, but the body never states wh",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 3
+        }
+      ],
+      "evidence_summary": "The slash-command mismatch is supported in a narrowed form. `SKILL.md:3` says “set up /goal, /loop, /schedule”, but the body never states whether these are literal Claude Code commands, Codex concepts, trigger phrases, or commands to create.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-305269141147"
+      ],
+      "peer_status": "confirmed",
+      "confidence": "high"
+    },
+    {
+      "id": "finding-a1cb12f8abab",
+      "dedupe_key": "file:SKILL.md` → `### 2. Goal-Based Loop:5 attempts / 5 tries goal examples look like norm not illustration",
+      "title": "\"5 attempts\" / \"5 tries\" in goal examples look like a norm, not an illustration",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `### 2. Goal-Based Loop",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "\"Good goal examples\"",
+          "line": null
+        }
+      ],
+      "evidence_summary": "Two of three examples fix attempts at 5 (\"Stop after 5 attempts\", \"Stop after 5 tries\").",
+      "impact": "Minor — readers may anchor on 5 as a recommended default. Not wrong, but the doc elsewhere correctly says \"cap attempts\" without prescribing a number; the examples undercut that by repeating one value.",
+      "suggested_action": "Vary the numbers across examples (e.g., 3, 5, 8) and add a parenthetical that the cap is task-specific.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-ce872bd5e87b"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-8ac97f0d8a84",
+      "dedupe_key": "title:codex goal-status blocked threshold. peer s 3 consecutive goal turns claim needs authoritative confirmation against curr",
+      "title": "**Codex goal-status blocked threshold.** The peer's \"≥3 consecutive goal turns\" claim needs authoritative confirmation against current Codex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "**Codex goal-status blocked threshold.** The peer's \"≥3 consecutive goal turns\" claim needs authoritative confirmation against current Codex docs/runtime before it can be treated as a real mismatch.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-ad4a74c4debc"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-cdc7962b7453",
+      "dedupe_key": "title:intended runner 3/ 4. there claude background-task/codex scheduler feature sibling scheduler skill expectation that",
+      "title": "**Intended runner for §3/§4.** Is there a Claude background-task/Codex scheduler feature, a sibling scheduler skill, or an expectation that",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "**Intended runner for §3/§4.** Is there a Claude background-task/Codex scheduler feature, a sibling scheduler skill, or an expectation that the user supplies cron/CI? The doc's \"run\" claim is only salvageable if a real substrate exists; this is a product-intent question.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-ab58e1d7b663"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-2d9355240ee3",
+      "dedupe_key": "title:no slash-command convention confirmed in-tree. i could not read find-skills codex-claude-cross-review. author should con",
+      "title": "**No slash-command convention confirmed in-tree.** I could not read `find-skills` or `codex-claude-cross-review`. Author should confirm whet",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "**No slash-command convention confirmed in-tree.** I could not read `find-skills` or `codex-claude-cross-review`. Author should confirm whether `/goal`/`/loop`/`/schedule` are defined elsewhere in `.agents` (which would weaken my P1 #1) or are merely aspirational triggers (which strengthens it). If the latter, decide: drop the tokens, or add command-authoring + scheduler scaffolding.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-d23d7efb1c86"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-5886aed42309",
+      "dedupe_key": "title:cost/safety boundaries presented as enforceable but skill advisory. max wall-clock duration max token budget etc. l",
+      "title": "**P1 — Cost/safety boundaries presented as enforceable, but a skill is advisory.** \"Max wall-clock duration,\" \"Max token budget,\" etc. are l",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P1 — Cost/safety boundaries presented as enforceable, but a skill is advisory.** \"Max wall-clock duration,\" \"Max token budget,\" etc. are listed flat as controls the loop will have, then the skill says \"run the loop.\" A single-turn skill cannot reliably enforce wall-clock or token caps without an external harness.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-e769a42a7703"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-e3e2fa9d2821",
+      "dedupe_key": "title:description promises /goal//loop//schedule skill body never delivers. body produces loop contract execution plan",
+      "title": "**P1 — Description promises `/goal`/`/loop`/`/schedule` the skill body never delivers.** The body produces a Loop Contract + Execution Plan",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "writing-great-skills/SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "**P1 — Description promises `/goal`/`/loop`/`/schedule` the skill body never delivers.** The body produces a Loop Contract + Execution Plan + Stop Rule; it contains no guidance for authoring custom slash commands or `.claude/commands/` / Codex command files, and no scheduling surface. In a stock Claude Code/Codex install those slash tokens are not built-in commands, so the trigger reads as a deliverable the skill doesn't produce. (Confirmed against `writing-great-skills/SKILL.md`: skills here ar",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-d87b51194db6"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-bef6a1839406",
+      "dedupe_key": "title:time-based proactive loops described but no runner named design run only honest 1 2. 3/ 4 concede need m",
+      "title": "**P1 — Time-based + proactive loops are described but no runner is named; \"Design and run\" is only honest for §1–§2.** §3/§4 concede \"need m",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "writing-great-skills/SKILL.md",
+          "line": null
+        }
+      ],
+      "evidence_summary": "**P1 — Time-based + proactive loops are described but no runner is named; \"Design and run\" is only honest for §1–§2.** §3/§4 concede \"need more infrastructure\" but name no concrete mechanism (cron, GitHub Action, webhook receiver, background task). Nothing in `writing-great-skills/SKILL.md` supplies a runner convention either, so this gap is not covered elsewhere.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-c07e4c78d653"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-4c3eb95a0d4f",
+      "dedupe_key": "title:stop after same blocker appears twice conflicts claimed codex rule that blocked goal requires blocker recur acr",
+      "title": "**P2 — \"Stop after the same blocker appears twice\" conflicts with a claimed Codex rule that a blocked goal requires the blocker to recur acr",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — \"Stop after the same blocker appears twice\" conflicts with a claimed Codex rule that a blocked goal requires the blocker to recur across ≥3 consecutive goal turns.** The peer states this as current Codex `goal-tool` semantics, but cites **no file** — and I could not verify it from any reachable artifact (`codex-claude-cross-review`, `find-skills`, and tree Grep were all permission-gated this pass; nothing in `writing-great-skills` or `diagnosing-bugs` describes a Codex goal-status state m",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-8454ca79cddb"
+      ],
+      "peer_status": "rejected",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-ac3a008c2451",
+      "dedupe_key": "title:proactive role separation / goal-evaluator flow rendered as flat prose article diagrams absent.",
+      "title": "**P2 — Proactive role separation / goal-evaluator flow rendered as flat prose; article diagrams absent.**",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Proactive role separation / goal-evaluator flow rendered as flat prose; article diagrams absent.**",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-151cdb031775"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-e679f66d6799",
+      "dedupe_key": "title:source attribution unverifiable no primary-source link.",
+      "title": "**P2 — Source attribution unverifiable; no primary-source link.**",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Source attribution unverifiable; no primary-source link.**",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-3903c224b08f"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-21620f111655",
+      "dedupe_key": "title:two three goal examples fix attempts at 5 reading like norm.",
+      "title": "**P2 — Two of three goal examples fix attempts at \"5,\" reading like a norm.**",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [],
+      "evidence_summary": "**P2 — Two of three goal examples fix attempts at \"5,\" reading like a norm.**",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-0e8263ff9802"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-51da5af26b3d",
+      "dedupe_key": "title:confirm whether proactive loops intended actually run this local agent environment only produce implementation plans ex",
+      "title": "Confirm whether proactive loops are intended to actually run in this local agent environment, or only produce implementation plans for an ex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Confirm whether proactive loops are intended to actually run in this local agent environment, or only produce implementation plans for an external scheduler/runner.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-777657ed8738"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-0e3d5447ccc8",
+      "dedupe_key": "title:confirm whether wechat translation desired citation source whether skill should cite original article directly ma",
+      "title": "Confirm whether the WeChat translation is the desired citation source, or whether the skill should cite the original article directly and ma",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Confirm whether the WeChat translation is the desired citation source, or whether the skill should cite the original article directly and mark translated claims separately.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-5306d20eae7b"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-093f909a72c8",
+      "dedupe_key": "title:confirm whether this skill meant operate real claude code /goal /loop /schedule commands codex goal tooling platform-ne",
+      "title": "Confirm whether this skill is meant to operate real Claude Code `/goal`, `/loop`, `/schedule` commands, Codex goal tooling, or a platform-ne",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Confirm whether this skill is meant to operate real Claude Code `/goal`, `/loop`, `/schedule` commands, Codex goal tooling, or a platform-neutral loop-design checklist. The current document blends all three.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-2c84f7e970c6"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-ea072730753a",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:36:examples do not demonstrate required output contract",
+      "title": "Examples do not demonstrate the required output contract",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 184
+        }
+      ],
+      "evidence_summary": "The “User-Facing Output” section requires `Loop Contract`, `Execution Plan`, and `Stop Rule` for design requests, and contract-first execution for execution requests. The examples at `207-226` only provide loose “Response shape” bullets and omit key contract fields like cost boundary, required tools/access, checkpoint format, failure mode, and runner.",
+      "impact": "Agents tend to copy examples. These examples teach the incomplete path for exactly the risky cases: PR-fixing loops and daily email summaries.",
+      "suggested_action": "Replace at least one example with a full minimal `Loop Contract` + `Execution Plan` + `Stop Rule`, including runner/cancel/logging for time-based loops and action boundaries for write loops.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-e595a662c207"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-587044a85ae5",
+      "dedupe_key": "title:/goal//loop//schedule triggers these meant be custom commands skill helps user create b commands t",
+      "title": "For the `/goal`/`/loop`/`/schedule` triggers: are these meant to be (a) custom commands the skill *helps the user create*, or (b) commands t",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "For the `/goal`/`/loop`/`/schedule` triggers: are these meant to be (a) custom commands the skill *helps the user create*, or (b) commands the skill expects to *be invoked by*? The answer determines whether P1 #1 is \"drop the tokens\" or \"add command-authoring guidance\" — I couldn't verify against sibling skills whether a command-authoring convention exists here.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-b2ecc8502a81"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-02706711b896",
+      "dedupe_key": "title:3/ 4 there intended runner this environment scheduler skill claude background-task feature external cron that",
+      "title": "For §3/§4: is there an intended runner in this environment (a scheduler skill, a Claude background-task feature, an external cron) that the",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "For §3/§4: is there an intended runner in this environment (a scheduler skill, a Claude background-task feature, an external cron) that the skill should point to? Without that I can't confirm whether the \"run\" claim is salvageable as-is or must be scoped down.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-daa6be970001"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-bb56fd99fca2",
+      "dedupe_key": "title:i reject claim that /goal /loop /schedule necessarily read as custom slash commands skill helps create. they may also",
+      "title": "I reject the claim that `/goal`, `/loop`, and `/schedule` necessarily “read as custom slash commands the skill helps create.” They may also",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "I reject the claim that `/goal`, `/loop`, and `/schedule` necessarily “read as custom slash commands the skill helps create.” They may also be intended as Claude Code command names or trigger phrases. The concrete issue is ambiguity and missing platform/runner mapping, not necessarily missing command-file authoring guidance.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-7d15461ea0d4"
+      ],
+      "peer_status": "rejected",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-839315c90ef3",
+      "dedupe_key": "title:i reject 5 attempts looks like norm item as review-blocking. skill.md 64-67 uses examples varying numbers would be nicer",
+      "title": "I reject the “5 attempts looks like a norm” item as review-blocking. `SKILL.md:64-67` uses examples; varying numbers would be nicer, but thi",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 64
+        }
+      ],
+      "evidence_summary": "I reject the “5 attempts looks like a norm” item as review-blocking. `SKILL.md:64-67` uses examples; varying numbers would be nicer, but this is not a correctness or operational-usefulness issue on its own.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-3fff14bad264"
+      ],
+      "peer_status": "rejected",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-bb0ab36451d9",
+      "dedupe_key": "title:i reject article s diagrams absent as required by itself. diagram would help but defect ambiguous execution/evaluat",
+      "title": "I reject “the article’s diagrams are absent” as a required P2 by itself. A diagram would help, but the defect is ambiguous execution/evaluat",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "rejected",
+      "evidence_refs": [],
+      "evidence_summary": "I reject “the article’s diagrams are absent” as a required P2 by itself. A diagram would help, but the defect is ambiguous execution/evaluator flow; prose or a table could fix it just as well.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-ede6ba710e73"
+      ],
+      "peer_status": "rejected",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-963efda40325",
+      "dedupe_key": "file:SKILL.md` → `## Loop Contract:loop contract trims fields clearly irrelevant but gives no rule recursion/exit p",
+      "title": "Loop Contract trims fields \"clearly irrelevant\" but gives no rule for the recursion/exit pair that most causes runaway loops",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `## Loop Contract",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "## Failure Modes`.",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The contract has `Stop condition`, `Max attempts or duration`, and `Failure mode`, but no explicit field for **\"what new information must each pass produce to justify another attempt\"** — even though `## Execution Cycle` says \"do not keep retrying the same failed action without new information.\"",
+      "impact": "The single most common runaway-loop cause (no new info per pass) is named as a rule but has no contract slot, so it's easy to omit. Concrete acceptance-criteria gap.",
+      "suggested_action": "Add a contract field like `Progress signal / what-new-info-per-pass` (or fold into `Verification signal` with an explicit \"must change between attempts\" clause).",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-301f25116a7e"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-113cf89ff1af",
+      "dedupe_key": "title:goal evaluator still under-specified. skill.md 22-34 has only verification signal 56-60 mentions evaluator but does not ",
+      "title": "P1 goal evaluator is still under-specified. `SKILL.md:22-34` has only `Verification signal`; `56-60` mentions an evaluator but does not requ",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 22
+        }
+      ],
+      "evidence_summary": "P1 goal evaluator is still under-specified. `SKILL.md:22-34` has only `Verification signal`; `56-60` mentions an evaluator but does not require source of truth, evaluator type, or pass/fail authority.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-53c991615654"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-283836b622f9",
+      "dedupe_key": "title:recurring/proactive loops still presented as runnable without capability gate. skill.md 3 78-99 201 say design run",
+      "title": "P1 recurring/proactive loops are still presented as runnable without a capability gate. `SKILL.md:3`, `78-99`, and `201` say “Design and run",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 3
+        }
+      ],
+      "evidence_summary": "P1 recurring/proactive loops are still presented as runnable without a capability gate. `SKILL.md:3`, `78-99`, and `201` say “Design and run”, interval/schedule/event triggers, then “run the loop”; the doc still does not require a runner, persistence, logs, cancel path, or proof the current environment can keep executing.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-e735ea884fb4"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-c748de762382",
+      "dedupe_key": "title:codex-specific stop semantics still conflict. skill.md 58 152 allow stopping when blocker repeats / after twice current ",
+      "title": "P2 Codex-specific stop semantics still conflict. `SKILL.md:58` and `152` allow stopping when a blocker repeats / after twice; current Codex",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 58
+        }
+      ],
+      "evidence_summary": "P2 Codex-specific stop semantics still conflict. `SKILL.md:58` and `152` allow stopping when a blocker repeats / after twice; current Codex goal handling requires stricter blocked semantics, so this should be platform-scoped.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-bb6467bb0fb5"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-768e877b91cd",
+      "dedupe_key": "title:write-action safeguards still need operational boundaries. skill.md 105-113 142-154 205-211 mention human gates/dry runs",
+      "title": "P2 write-action safeguards still need operational boundaries. `SKILL.md:105-113`, `142-154`, and `205-211` mention human gates/dry runs, but",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file_mention",
+          "ref": "SKILL.md",
+          "line": 105
+        }
+      ],
+      "evidence_summary": "P2 write-action safeguards still need operational boundaries. `SKILL.md:105-113`, `142-154`, and `205-211` mention human gates/dry runs, but the PR review loop example still lacks allowed paths/actions, dirty-worktree handling, rollback, and final non-merge/send/delete boundaries.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-ae0e2e7c0bd9"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-aaba68839d19",
+      "dedupe_key": "file:SKILL.md` → `### 4. Proactive Loop` (\"A strong proactive loop separates roles:\"):proactive role separation pipeline but rendered as flat list article s diagrams ",
+      "title": "Proactive role separation is a pipeline but rendered as a flat list; the article's diagrams are absent",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → `### 4. Proactive Loop` (\"A strong proactive loop separates roles:\")",
+          "line": null
+        }
+      ],
+      "evidence_summary": "The five roles (Trigger → Main agent → artifact update → Second-agent review → Human decision) are a sequential flow with feedback, but presented as bullet prose. The task explicitly notes the source article included diagrams for \"proactive loop roles\" and the \"goal evaluator loop.\"",
+      "impact": "Ambiguity about ordering and feedback edges (does the reviewer feed back to the main agent, or only to the human? does the human re-trigger?). Re-adding a small ASCII diagram for the evaluator loop (work → verify → pass/fail → retry) and the proactive pipeline would remove that ambiguity and better preserve the source's value.",
+      "suggested_action": "Add two compact ASCII diagrams (goal-evaluator loop; proactive role pipeline with the human-at-irreversible-boundary gate). Keep them tiny; prose can stay.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-fa11f4ca4137"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-f509f604ae5c",
+      "dedupe_key": "file:SKILL.md` → intro paragraph:source attribution unverifiable primary-source link missing",
+      "title": "Source attribution is unverifiable; primary-source link missing",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` → intro paragraph",
+          "line": null
+        }
+      ],
+      "evidence_summary": "\"This skill is based on the loop model from 'Getting started with loops': …\" — no URL, author, or date.",
+      "impact": "Documentation completeness + unverifiable claim. The title is generic enough to be ambiguous, and reviewers/readers can't verify the skill faithfully represents the source (the task itself notes the source was a WeChat *translation*, raising paraphrase-risk). For a skill that proposes verifiable signals elsewhere, leaving its own provenance unverifiable is inconsistent.",
+      "suggested_action": "Add a one-line citation with URL and access date, and note it is a translated/secondary source so readers know to confirm against the primary.",
+      "sources": [
+        "claude_initial"
+      ],
+      "source_cards": [
+        "raw-20ca511d5b0e"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-2dece89ca031",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:11:stop rules conflict platform-specific goal behavior too easy apply prematurely",
+      "title": "Stop rules conflict with platform-specific goal behavior and are too easy to apply prematurely",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 58
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 152
+        }
+      ],
+      "evidence_summary": "The skill says stop when “a blocker repeats” and later “Stop after the same blocker appears twice.” Current Codex goal handling is stricter for marking a goal blocked: a repeated blocker must recur across at least three consecutive goal turns before setting blocked.",
+      "impact": "If this skill is used with Codex `/goal`, it can teach premature blocked termination and mismatch the actual implementation.",
+      "suggested_action": "Separate generic loop stop policy from Codex goal status policy. For Codex, explicitly defer to current goal-tool semantics; for generic loops, define “repeats” as an observed count in the contract.",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_cards": [
+        "raw-3a3bb1482207"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-5eca4a70552d",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:0:trigger description overloaded likely overtrigger",
+      "title": "Trigger description is overloaded and likely to overtrigger",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 3
+        }
+      ],
+      "evidence_summary": "The description mixes broad triggers (`automate repeated agent work`, `autonomous workflows`) with literal-looking command names (`/goal`, `/loop`, `/schedule`) and concrete task classes (`routines`, `monitors`, `recurring checks`).",
+      "impact": "It can steal ordinary debugging, testing, or workflow tasks that only need a normal turn or another focused skill. It also obscures the key distinction between “design a loop” and “run a loop”.",
+      "suggested_action": "Split the description into fewer branches: design a bounded agent loop; execute a bounded in-turn/goal loop; plan scheduled/proactive loops only when a runner exists or must be specified.",
+      "sources": [
+        "codex_response"
+      ],
+      "source_cards": [
+        "raw-a34ec3e5384a"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-fa2a3523b1ba",
+      "dedupe_key": "file:SKILL.md` frontmatter `description` (\"automate repeated agent work:trigger overlap diagnosing-bugs automate repeated agent work broad enough captur",
+      "title": "Trigger overlap with `diagnosing-bugs` — \"automate repeated agent work\" is broad enough to capture ordinary debug-fix cycles",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "SKILL.md` frontmatter `description` (\"automate repeated agent work",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "… autonomous workflows\")",
+          "line": null
+        },
+        {
+          "type": "file",
+          "ref": "cross-checked against `/Users/bobo/.agents/skills/diagnosing-bugs/SKILL.md`.",
+          "line": null
+        }
+      ],
+      "evidence_summary": "`diagnosing-bugs` already owns the investigate→hypothesize→fix→verify feedback loop territory. The loop-designer trigger's \"automate repeated agent work\" with no qualifier can route ordinary debugging into loop-designer, where it would be over-built into a \"loop.\"",
+      "impact": "Trigger-quality / routing ambiguity; mild scope creep between sibling skills.",
+      "suggested_action": "Narrow the trigger to *loop-shaped* repeated work — e.g., \"turn a repeated, checkable workflow into a bounded loop\" and/or \"set up scheduled or goal-iterated agent routines\" — and explicitly defer one-off debugging to `diagnosing-bugs`. (This confirms the peer's non-blocking note and grounds it in the sibling file.)",
+      "sources": [
+        "claude_response"
+      ],
+      "source_cards": [
+        "raw-ac8527a05472"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    },
+    {
+      "id": "finding-5196191ddd49",
+      "dedupe_key": "title:was intended deliverable design-only skill skill that may actually start/run loops codex/claude current text claims both",
+      "title": "Was the intended deliverable a design-only skill, or a skill that may actually start/run loops in Codex/Claude? The current text claims both",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "ambiguity",
+      "evidence_refs": [],
+      "evidence_summary": "Was the intended deliverable a design-only skill, or a skill that may actually start/run loops in Codex/Claude? The current text claims both.",
+      "impact": "",
+      "suggested_action": "",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_cards": [
+        "raw-e37183b41a71"
+      ],
+      "peer_status": "needs_human",
+      "confidence": "low"
+    },
+    {
+      "id": "finding-021a926d6003",
+      "dedupe_key": "file:/Users/bobo/.agents/skills/loop-designer/SKILL.md:21:write-action safeguards present but not operational enough autonomous fix loops",
+      "title": "Write-action safeguards are present but not operational enough for autonomous fix loops",
+      "priority": "P2",
+      "review_type": "documentation",
+      "category": "mismatch",
+      "evidence_refs": [
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 105
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 113
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 142
+        },
+        {
+          "type": "file",
+          "ref": "/Users/bobo/.agents/skills/loop-designer/SKILL.md",
+          "line": 205
+        }
+      ],
+      "evidence_summary": "The doc says keep humans at irreversible boundaries and use dry runs/read-only modes, but the PR-review example only asks to verify PR identity, sources, write permission, and runtime. It does not require clean worktree checks, branch/commit ownership, rollback plan, allowed file scope, or explicit “do not merge/send/delete” boundaries.",
+      "impact": "A repeated “review comments then fix” loop can mutate broad repo state over multiple passes without enough containment.",
+      "suggested_action": "For any loop that writes, require an action boundary: allowed paths/actions, dirty-worktree handling, rollback strategy, final human gate, and acceptance criteria for each pass.",
+      "sources": [
+        "codex_initial"
+      ],
+      "source_cards": [
+        "raw-259ba1e13d5f"
+      ],
+      "peer_status": "one_sided",
+      "confidence": "medium"
+    }
+  ]
+}
